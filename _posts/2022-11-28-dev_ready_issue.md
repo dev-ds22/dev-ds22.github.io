@@ -1,12 +1,12 @@
 ---
 layout: single
-title: "Tech Stack - 01. 리엑티브 vs MVC"
-excerpt: "Webflux (NonBlocking) 와 MVC (Blocking) 비교"
+title: "[Tech Stack] 01 - Reactive vs MVC"
+excerpt: "Reactive (Webflux, NonBlocking) 와 MVC (Blocking) 비교"
 
 categories:
   - tech
 tags:
-  - [tech, Webflux, MVC]
+  - [tech, Reactive, MVC]
 
 toc: false
 toc_sticky: true
@@ -16,15 +16,15 @@ last_modified_at: 2022-11-28
 ---
 # 리엑티브 vs MVC
 
-## 1. Webflux (nio)와 MVC (bio) 속도 비교
-- Webflux 프로젝트의 비지니스 로직들이 모두 Async + NonBlocking 으로 되어있다면 빠를 것. 
+## 1. Reactive (nio)와 MVC (bio) 속도 비교
+- Reactive 프로젝트의 비지니스 로직들이 모두 Async + NonBlocking 으로 되어있다면 빠를 것. 
   (DB connector, 외부 API 호출 등)
 - 하나라도 Sync or Blocking 된 부분이 있거나, CPU 를 많이 쓰는 코드가 들어있다면 MVC보다 느림
 
-## 2. blocking 로직이 들어간 Webflux
+## 2. blocking 로직이 들어간 Reactive
 - 느리다. blocking 이 하나라도 들어가면 MVC가 더 빠르다.
 
-## 3. Webflux의 장단점
+## 3. Reactive 의 장단점
 ### 장점
 - MVC 보다 빠르다. (더 빠른 응답속도)
 - MVC 보다 가볍다. (낮은 CPU, Memory 사용)
