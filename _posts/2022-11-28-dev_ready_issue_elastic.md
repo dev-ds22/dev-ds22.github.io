@@ -38,8 +38,8 @@ last_modified_at: 2022-11-28
   <summary>Exp.</summary>  
   <pre>
 
-### 실무
-
-- END
+### 참조
+ * [Non-Blocking(WebFlux) vs. Blocking(MVC)](https://wowyongs.tistory.com/16)
+ 
   </pre>
 </details>
