@@ -14,8 +14,8 @@ toc_sticky: true
 date: 2022-11-28
 last_modified_at: 2022-11-28
 ---
+# 리엑티브 vs MVC
 
-## 리엑티브 vs MVC
 ## 1. Webflux (nio)와 MVC (bio) 속도 비교
 - Webflux 프로젝트의 비지니스 로직들이 모두 Async + NonBlocking 으로 되어있다면 빠를 것. 
   (DB connector, 외부 API 호출 등)
@@ -40,19 +40,19 @@ last_modified_at: 2022-11-28
 
 - 안정성 : Full Reactive 스택이 아직 안정적이지 않음
 
-### **리엑티브 방식에서 R2DBC를 사용하지 않으면 MVC보다 낮은 성능**
+### R2DBC
+- **리엑티브 방식에서 R2DBC를 사용하지 않으면 MVC보다 낮은 성능**
+- H2, MariaDB, MySQL, Postgres, Oracle, MS SQL 지원
+- R2DBC의 단점
 
-  - H2, MariaDB, MySQL, Postgres, Oracle, MS SQL 지원
-  - R2DBC의 단점
+>  
+> Spring Data R2DBC aims at being conceptually easy.  
+> In order to achieve this, it does NOT offer caching,   
+> lazy loading, write-behind, or many other features of ORM frameworks.  
+> This makes Spring Data R2DBC a simple, limited, opinionated object mapper.  
+>
 
-  >  
-  > Spring Data R2DBC aims at being conceptually easy.  
-  > In order to achieve this, it does NOT offer caching,   
-  > lazy loading, write-behind, or many other features of ORM frameworks.  
-  > This makes Spring Data R2DBC a simple, limited, opinionated object mapper.  
-  >
-
-    - 개념적으로 쉬운 것을 목표, 기존 JDBC나 JPA에서 쉽게 사용했던 기능을 제공안함
+- 개념적으로 쉬운 것을 목표, 기존 JDBC나 JPA에서 쉽게 사용했던 기능을 제공안함
 
 ## 결론
 - 100ms 미만의 트래픽이 높은 서비스개발 시 webflux + reative DB 를 사용
