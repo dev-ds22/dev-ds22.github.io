@@ -15,17 +15,21 @@ date: 2022-11-28
 last_modified_at: 2022-11-28
 ---
 # ELK stack 과 Kafka
+
 - 엘라스틱 사용요청으로 ELK Stack 환경필요
 - ELK Stack = ElasticSearch + Logstash + Kibana (+ Beats)
 
 ## Logstash
+
 - 데이터 수집 파이프라인
 - 파이프라인으로 데이터를 수집하여 필터를 통해 변환 후 ES 로 전송
 
 ## Kibana
+
 - ES 에서 색인된 데이터를 검색하여 분석 및 시각화
 
 ## Beats
+
 - 경량 데이터 수집기
 - 서버에 에이전트로 설치하여 다양한 유형의 데이터를 Logstash나 Elasticsearch에 전송
 
@@ -39,7 +43,8 @@ last_modified_at: 2022-11-28
   <pre>
 
 ### 참조
- * [Non-Blocking(WebFlux) vs. Blocking(MVC)](https://wowyongs.tistory.com/16)
- 
+ * [Elastic 가이드 북]( https://esbook.kimjmin.net/ )
+ * [AWS EC2 ELK 설치]( https://angryfullstack.tistory.com/entry/AWS-EC2-ELK-Elasticsearch7x-Logstash7x-Kibana7x-%EC%B5%9C%EC%8B%A0%EB%B2%84%EC%A0%84-%EC%84%A4%EC%B9%98 )
+
   </pre>
 </details>

@@ -34,15 +34,13 @@ last_modified_at: 2022-11-28
 - MVC 보다 가볍다. (낮은 CPU, Memory 사용)
 - MVC에 비해 튜닝포인트가 적다. (Heap Memory, GC등)
 
-### 단점
+### 단점 - 개발조직이 Reactive Patterns에 얼마나 익숙한가?
 
-- 개발조직이 Reactive Patterns에 얼마나 익숙한가? 
- - Reactive는 패러다임의 변화가 필요
- - Reactive 개념이 충분히 학습되지 않으면 Blocking 요소 개입으로 낮은 성능
- - 유지보수 어려움
- - 코드 가독성이 매우 낮음
- - 값을 즉시 반환하지 않는 코드 블록의 디버깅 및 테스트 어려움
-
+- Reactive는 패러다임의 변화가 필요
+- Reactive 개념이 충분히 학습되지 않으면 Blocking 요소 개입으로 낮은 성능
+- 유지보수 어려움
+- 코드 가독성이 매우 낮음
+- 값을 즉시 반환하지 않는 코드 블록의 디버깅 및 테스트 어려움
 - 안정성 : Full Reactive 스택이 아직 안정적이지 않음
 
 ### R2DBC
@@ -72,7 +70,7 @@ last_modified_at: 2022-11-28
 
 ### 참조
 
- * [Non-Blocking(WebFlux) vs. Blocking(MVC)](https://wowyongs.tistory.com/16)
+ * [Non-Blocking(WebFlux) vs. Blocking(MVC)]( https://wowyongs.tistory.com/16 )
 
 - END
 

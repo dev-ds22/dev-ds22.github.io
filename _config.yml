@@ -13,14 +13,14 @@
 # theme                  : "minimal-mistakes-jekyll"
 # remote_theme           : "mmistakes/minimal-mistakes"
 
-minimal_mistakes_skin    : sunrise # "default" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
+minimal_mistakes_skin    : contrast # "default" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
 
 # Site Settings
 locale                   : "ko-KR"
 title                    : "Dev-DS22 Tech Note."
 title_separator          : "&#124;"
 subtitle                 : # site tagline that appears below site title in masthead
-name                     : "Wontae Kim"
+name                     : "Dev-DS22 Tech"
 description              : "Dev-DS22 Tech Note. Version 0.1"
 url                      : "https://dev-ds22.github.io/"
 baseurl                  : # the subpath of your site, e.g. "/blog"
