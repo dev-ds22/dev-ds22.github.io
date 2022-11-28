@@ -1,6 +1,5 @@
 ---
 layout: single
-
 title: "Tech Stack - 01. 리엑티브 vs MVC"
 excerpt: "Webflux (NonBlocking) 와 MVC (Blocking) 비교"
 
@@ -12,8 +11,8 @@ tags:
 toc: false
 toc_sticky: true
 
-date: 2022-11-28 16:50:00 +0900
-lastmod: 2022-11-28 16:50:00 +0900 # sitemap.xml에서 사용됨
+date: 2022-11-28
+last_modified_at: 2022-11-28
 ---
 
 ## 리엑티브 vs MVC
@@ -60,22 +59,11 @@ lastmod: 2022-11-28 16:50:00 +0900 # sitemap.xml에서 사용됨
 - 400ms 미만의 높은 트래픽을 맡게 된다면 계속 MVC 를 사용
 
 
-[Non-Blocking(WebFlux) vs. Blocking(MVC)] https://wowyongs.tistory.com/16
-
-
-[맨 위로 이동하기](#){: .btn .btn--primary }{: .align-right}
-
 <details>
   <summary>Exp.</summary>  
   <pre>
 
 ### 실무
-- .java
-
-``` java
-
-```
-
 
 - END
   </pre>
