@@ -37,15 +37,16 @@ last_modified_at: 2022-11-28
 ### 관계형 데이터베이스와의 개념 비교
 
 - 개념비교
-    | ElasticSearch | RDBMS |
-    |---|---|
-    | 인덱스(Index) | 데이터베이스(Database) |
-    | 샤드(Shard) | 파티션(Partition) |
-    | 타입(Type) | 테이블(Table) |
-    | 문서(Document) | 행(Row) |
-    | 필드(Field) | 열(Column) |
-    | 매핑(Mapping) | 스키마(Schema) |
-    | Query DSL | SQL |
+
+| ElasticSearch | RDBMS |
+|---|---|
+| 인덱스(Index) | 데이터베이스(Database) |
+| 샤드(Shard) | 파티션(Partition) |
+| 타입(Type) | 테이블(Table) |
+| 문서(Document) | 행(Row) |
+| 필드(Field) | 열(Column) |
+| 매핑(Mapping) | 스키마(Schema) |
+| Query DSL | SQL |
 
 - 6.0이하 버전의 ElasticSearch에서는 하나의 인덱스 내부 기능에 따라 데이터 분류 후에 여러 개의 타입을 만들어 사용했지만 현재는 하나의 인덱스에 하나의 타입만을 구성해야 합니다.
 - 매핑은 필드의 구조와 제약조건에 대한 명세를 말하며 관계형 DB의 스키마와 같습니다.

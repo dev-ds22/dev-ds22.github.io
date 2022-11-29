@@ -33,10 +33,10 @@ last_modified_at: 2022-11-29
 
 - 구독서비스 : 정기배송
   - 주문Batch 와 결재 Batch를 별도로 구현
-  - 결재실패 시 RollBack 방법은?
+  - **결재실패 시 RollBack 방법은?**
 
 - B2B Mall : 사업자몰, 대량구매는 일반인도 가능하도록
-  - 대량 배송 시 재고, 용차(무게, 부피 계산)의 이슈있음
+  - **대량 배송 시 재고, 용차(무게, 부피 계산)의 이슈있음**
 
 - UCC(User Create Contents)  : 개인Blog + 상품Mapping, Following 기능
 - MemberShip 활용
@@ -74,8 +74,7 @@ last_modified_at: 2022-11-29
   <pre>
 
 ### 참조
- * [Elastic 가이드 북]( https://esbook.kimjmin.net/ )
- * [AWS EC2 ELK 설치]( https://angryfullstack.tistory.com/entry/AWS-EC2-ELK-Elasticsearch7x-Logstash7x-Kibana7x-%EC%B5%9C%EC%8B%A0%EB%B2%84%EC%A0%84-%EC%84%A4%EC%B9%98 )
+
 
   </pre>
 </details>
