@@ -17,6 +17,8 @@
             <ul>
                 {% for category in site.categories %} {% if category[0] == "tech" %}
                 <li><a href="/categories/tech" class="">TECH ({{category[1].size}})</a></li>
+                {% endif %} {% if category[0] == "note" %}
+                <li><a href="/categories/note" class="">NOTE ({{category[1].size}})</a></li>
                 {% endif %} {% if category[0] == "issue" %}
                 <li><a href="/categories/issue" class="">ISSUE ({{category[1].size}})</a></li>
                 {% endif %} {% endfor %}
