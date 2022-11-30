@@ -51,7 +51,9 @@ last_modified_at: 2022-11-30
 - BO 
   - 메시지관리, 이미지관리. Short URL관리
   - 통합메시징(TMS - 통합 메시지 채널 최적화 솔루션)
-  - 이미지 리사이즈 시스템(DIMS)
+  - 이미지 리사이즈 시스템(DIMS, Dynamic Image Management System)
+    - 원래의 이미지를 다양한 형태로 가공하는 기능, STON에서 제공
+    - 라이브러리 imgscalr로 대체?
 
 - 기타 - JIRA-JENKINS : 요청관리, 형상관리, 배포관리, 장애관리
   - 웹로그분석 : Google Analytics
