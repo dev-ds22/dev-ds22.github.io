@@ -43,11 +43,13 @@ last_modified_at: 2022-11-30
 
 ### 기타 Solutions
 
-- FO - 개인화추천 (?): 개인화 추천검색, 상품/행사/이벤트 추천
-- 검색 사전작업(STT, QR, Barcode)
-- 검색시스템(ElasticSearch) : 통합검색, 수정/인덱싱
+- FO 
+  - 개인화추천 (?): 개인화 추천검색, 상품/행사/이벤트 추천
+  - 검색 사전작업(STT, QR, Barcode)
+  - 검색시스템(ElasticSearch) : 통합검색, 수정/인덱싱
           
-- BO - 메시지관리, 이미지관리. Short URL관리
+- BO 
+  - 메시지관리, 이미지관리. Short URL관리
   - 통합메시징(TMS - 통합 메시지 채널 최적화 솔루션)
   - 이미지 리사이즈 시스템(DIMS)
 

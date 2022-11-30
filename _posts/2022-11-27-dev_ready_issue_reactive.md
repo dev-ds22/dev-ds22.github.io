@@ -11,8 +11,8 @@ tags:
 toc: false
 toc_sticky: true
 
-date: 2022-11-28
-last_modified_at: 2022-11-28
+date: 2022-11-27
+last_modified_at: 2022-11-27
 ---
 # Reactive vs MVC
 
