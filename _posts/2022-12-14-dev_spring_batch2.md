@@ -1,0 +1,232 @@
+---
+layout: single
+title: "[Spring Batch] Spring Batch"
+excerpt: "Spring Batch 정리 #2"
+
+categories:
+  - tech
+tags:
+  - [tech, Spring Batch]
+
+toc: false
+toc_sticky: true
+
+date: 2022-12-14
+last_modified_at: 2022-12-14
+---
+# Spring Batch 정리 #2
+## 쿼츠(Quartz) 사용법
+- 스프링 부트에서의 스케줄과 관련된 대표적인 라이브러리인 쿼츠(Quartz)설정은 매우 간단.
+- maven 또는 gradle에서 라이브러리를 추가하는 것 만으로도 쿼츠(Quartz)와 관련된 객체가 자동으로 어플리케이션 영역에 생성.
+- 스케줄을 실행하는 대표적인 Job클래스의 형태.
+
+```java
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.springframework.scheduling.quartz.QuartzJobBean;
+
+public class JobScheduler extends QuartzJobBean {
+	
+
+    @Override
+    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+		
+    }
+
+}
+```
+
+- 추상 클래스인 QuartzJobBean을 상속 받으면 executeInternal이라는 메소드를 오버라이드.
+- 메소드에 JobExecutionContext 라는 인터페이스를 사용가능.
+- context라는 객체를 활용하면 스프링부트에 의해 이미 어플리케이션 영역에 등록된 쿼츠(Quartz)로부터 Bean 객체를 사용가능.
+
+```java
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.springframework.scheduling.quartz.QuartzJobBean;
+
+public class 동작해야되는스케줄클래스 extends QuartzJobBean {
+	
+    private 내가만든서비스 service;
+    @Override
+    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+        if(service == null) { 
+            ApplicationContext appCtx = (ApplicationContext)context.getJobDetail()
+                .getJobDataMap().get("사용자가지정한이름");
+            service = appCtx.getBean(내가만든서비스.class); 
+        }        
+    }
+
+}
+```
+
+- context 객체로부터의 일(job)에 대한 정보를 "사용자가 지정한이름"으로부터 가져와서의 스프링부트의 어플리케이션(Application) 영역을 가져오게 되어 있습니다.
+- getBean 메소드를 통해 본인이 등록한 서비스 또는 빈(Bean) 객체를 사용.
+여기서 주의해야되는 점은 아래 어플리케이션(Application) 영역을 가져오는 코드입니다.
+
+context.getJobDetail().getJobDataMap().get("사용자가지정한이름")
+ 
+어플리케이션(Application)영역을 가져오는 코드는 반드시 별도의 설정을 통해서만 가능합니다.
+만약 위 코드를 그냥 실행한다면 getJobDataMap() 메소드에서의 반환값이 아무것도 없는 상태(null 또는 size 0)로 나오게 될 것 입니다.
+이러한 어플리케이션(Application)영역을 가져오기 위한 방법은 구글링하면 각종 샘플 코드가 존재하지만, 프로젝트의 구성과 환경이 서로 상이하기 때문에 잘 안되는 경우가 많습니다.
+그래서 이를 위해서 아주 간단하게 어플리케이션(Application)영역을 등록하는 방법을 살펴 보겠습니다.
+
+```java
+import java.util.function.Function;
+
+import org.quartz.CronScheduleBuilder;
+import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Configuration;
+
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class 웹설정클래스 implements WebMvcConfigurer{
+
+    //쿼츠 스케줄을 위한 객체 입니다.
+    private Scheduler scheduler;
+    private ApplicationContext applicationContext;
+    
+    //어플리케이션 영역을 가져오기 위해 사용할 이름입니다.
+    public static String APPLICATION_NAME = "appContext"; 
+	
+    //생성자를 통하여 아래 2개의 객체를 받습니다.
+    public 웹설정클래스(Scheduler sch, ApplicationContext applicationContext) {
+        this.scheduler = sch;
+        this.applicationContext = applicationContext;
+    }
+}
+```
+
+- "웹설정클래스" 라는 이름의 클래스 입니다.
+- WebMvcConfigurer 인터페이스를 상속 받은 뒤에 Configuration 에노테이션을 붙여 주었습니다.
+- 이렇게 되면 해당 클래스는 스프링부트에 의해서 자동으로 빈(Bean) 주입을 받을 수 있게되며, 스프링부트에서의 설정 역할을 할 수 있게 됩니다.
+- 이를 확인 한 이후에 동작을 시켜서 scheduler와 applicationContext 객체가 정상적으로 주입받았는지 확인 합니다.
+
+![spring_quartz](./../../images/tech/spring_batch_quartz.png)
+
+여기까지 왔다면 이제 남은 작업은 어플리케이션 영역을 넣어주고, Job 클래스를 상속받은(QuartzJobBean) 스케줄을 동작해야 될 객체를 등록하여 줍니다.
+
+아래 샘플 소스코드가 이번 내용의 핵심 입니다!!!
+
+```java
+import java.util.function.Function;
+import javax.annotation.PostConstruct;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import 동작해야되는스케줄클래스;  //사용자가 만든 스케줄클래스 입니다.
+
+@Configuration
+public class 웹설정클래스 implements WebMvcConfigurer{
+
+    //쿼츠 스케줄을 위한 객체 입니다.
+    private Scheduler scheduler;
+    private ApplicationContext applicationContext;
+    
+    //어플리케이션 영역을 가져오기 위해 사용할 이름입니다.
+    public static String APPLICATION_NAME = "appContext"; 
+	
+    //생성자를 통하여 아래 2개의 객체를 받습니다.
+    public 웹설정클래스(Scheduler sch, ApplicationContext applicationContext) {
+        this.scheduler = sch;
+        this.applicationContext = applicationContext;
+    }
+
+    @PostConstruct
+    public void schInint() throws SchedulerException {
+        //크론스케줄을 쓰겠다는 함수
+        final Function<String, Trigger> trigger = (exp)-> TriggerBuilder.newTrigger() 
+            .withSchedule(CronScheduleBuilder.cronSchedule(exp)).build();
+
+        JobDataMap ctx = new JobDataMap();  //스케줄러에게 어플리케이션(Application)영역을 넣어 줍니다.  
+        ctx.put(APPLICATION_NAME, applicationContext);  //넣어줄 때 이름은 "appContext" 입니다.
+        JobDetail jobDetail = JobBuilder.newJob(동작해야되는스케줄클래스.class).setJobData(ctx).build();  //스케줄을 생성해서
+        scheduler.scheduleJob(jobDetail, trigger.apply("0/59 * * * * ?"));  //크론형식을 더해 시작합니다
+    }
+
+}
+```
+
+- PostConstruct 에노테이션을 활용하여 Scheduler 와 ApplicationContext 객체가 "웹설정클래스"가 의존성을 다 받고 나서 동작하게 하였습니다.
+
+- 이렇게 간단한 웹 설정을 하면 처음 소개한 "동작해야되는스케줄클래스" 가 정상적으로 동작하며 기존에 등록한 Bean 객체에 접근을 할 수 있게 됩니다.
+
+```java
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.springframework.scheduling.quartz.QuartzJobBean;
+
+public class 동작해야되는스케줄클래스 extends QuartzJobBean {
+	
+    private 내가만든서비스 service;
+    @Override
+    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+        if(service == null) { 
+            ApplicationContext appCtx = (ApplicationContext)context.getJobDetail()
+                .getJobDataMap().get("사용자가지정한이름");
+            service = appCtx.getBean(내가만든서비스.class); 
+            System.out.println(service);  //null이 안나오면 성공입니다!! 이제 원하는작업 ㄱㄱ!
+        }        
+    }
+
+}
+```
+
+- 다른 내용을 검색하면 SchedulerFactoryBean 를 받아서 Bean으로 등록해야한다..AutoWired를 해야한다 등등..
+스케줄러의 객체를 관리하고 선언하며, 직접적인 접근을 통해 세부적인 설정을 하는 예시가 많습니다.
+이러한 방법은 프로젝트의 구성, 라이브러리의 버전 및 기타 환경등에 의해서 잘 안되는 경우가 많습니다.
+
+<details>
+  <summary>Exp.</summary>  
+  <pre>
+
+### 참조
+
+- CustomQuartzJob
+
+```java
+@EqualsAndHashCode(callSuper=false)
+@Data
+@Slf4j
+@NonNullApi
+public class CustomQuartzJob extends QuartzJobBean {
+
+    @Override
+    protected void executeInternal(JobExecutionContext context) {
+        try{
+            PThemeExhbtMgtVO pthemeExhbtMgtVO = (PThemeExhbtMgtVO) context.getMergedJobDataMap().get("themeExhbtMgtVO");
+            DsThemeExhbtMstVo dsthemeExhbtMstVO = new DsThemeExhbtMstVo();
+            BeanUtils.copyProperties(pthemeExhbtMgtVO, dsthemeExhbtMstVO);
+            ApplicationContext ctx = (ApplicationContext) context.getMergedJobDataMap().get("applicationContext");
+            ThemeExbtService themeExbtService = ctx.getBean(ThemeExbtService.class);
+
+            log.info("themeExhbtMgtVo : {}", pthemeExhbtMgtVO);
+            log.info("themeExbtService:{} ", themeExbtService);
+
+            themeExbtService.themeExbtServiceProc(dsthemeExhbtMstVO, pthemeExhbtMgtVO.getUserId());
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+}
+```
+
+  </pre>
+</details>

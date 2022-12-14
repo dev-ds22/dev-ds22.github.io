@@ -14,7 +14,7 @@ toc_sticky: true
 date: 2022-12-14
 last_modified_at: 2022-12-14
 ---
-# Spring Batch 정리
+# Spring Batch 정리 #1
 ## JOB 상태를 STARTED에서 FAILED 로 변경
 - Spring Batch 기동 시 배치 상태를 STARTED에서 FAILED로 변경하는 방법
 
@@ -304,6 +304,307 @@ public class CustomDefaultBatchConfigurer extends DefaultBatchConfigurer {
 //    public void setDataSource(DataSource dataSource) {
 //        // 여기를 비워놓는다
 //    }
+}
+```
+
+
+- DuplicateJobCheckListener
+
+```java
+@Slf4j
+@Component
+public class DuplicateJobCheckListener extends JobExecutionListenerSupport{
+
+    @Autowired
+    JobExplorer jobExplorer;
+
+    @Autowired
+    JobOperator jobOperator;
+
+    @Bean
+    public JobRegistryBeanPostProcessor jobRegistryBeanPostProcessor(JobRegistry jobRegistry) {
+        JobRegistryBeanPostProcessor jobRegistryBeanPostProcessor = new JobRegistryBeanPostProcessor();
+        jobRegistryBeanPostProcessor.setJobRegistry(jobRegistry);
+        return jobRegistryBeanPostProcessor;
+    }
+
+
+    @Override
+    public void beforeJob(JobExecution jobExecution) {
+        log.info("******************************** beforeJob :"+jobExecution.getJobInstance().getJobName());
+        Set<JobExecution> jobExecutionSet = jobExplorer.findRunningJobExecutions(jobExecution.getJobInstance().getJobName());
+        if (jobExecutionSet.size() > 1) {
+            log.info("**********************Exist********** beforeJob :"+jobExecution.getJobInstance().getJobName());
+            log.info("**********************StopId********** beforeJob :"+jobExecution.getId());
+            try {
+                jobOperator.stop(jobExecution.getId());
+            } catch (NoSuchJobExecutionException e) {
+                e.printStackTrace();
+            } catch (JobExecutionNotRunningException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void afterJob(JobExecution jobExecution) {
+        log.info("******************************** afterJob :"+jobExecution.getJobInstance().getJobName());
+        log.info("******************************** afterJobId :"+jobExecution.getId());
+    }
+}
+```
+
+- DynamicScheduleConfig
+
+```java
+@Slf4j
+@Component
+public class DynamicScheduleConfig {
+
+    public  Scheduler scheduler;
+    private SchedulerFactory schedulerFactory;
+    private SchedulerFactoryBean schedulerFactoryBean;
+
+    @Autowired
+    private JobLauncher jobLauncher;
+
+    @Autowired
+    private JobLocator jobLocator;
+
+    @Qualifier("themeExbt")
+    private Job job;
+
+    @Autowired
+    ApplicationContext applicationContext;
+
+    @PostConstruct
+    public void dynamicSchedulerStart() throws SchedulerException{
+
+        schedulerFactory = new StdSchedulerFactory();
+        this.scheduler = schedulerFactory.getScheduler();
+        this.scheduler.start();
+    }
+
+
+    public JobDetail makeJobDetail(String jobName,  PThemeExhbtMgtVO themeExhbtMgtVO){
+
+        JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put("jobName", jobName);
+        jobDataMap.put("jobLauncher", jobLauncher);
+        jobDataMap.put("jobLocator", jobLocator);
+        jobDataMap.put("triggerName", jobName);
+        jobDataMap.put("themeExhbtMgtVO", themeExhbtMgtVO);
+        jobDataMap.put("applicationContext", applicationContext);
+        log.info("applicationContext : {}", applicationContext);
+
+        return JobBuilder.newJob(DaisoQuartzJob.class)
+                .setJobData(jobDataMap)
+                .withIdentity(jobName)
+                .build();
+    }
+
+        public JobDetail makeJobDetail(Job job){
+        JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put("jobName", job.getName());
+
+        jobDataMap.put("jobLauncher", jobLauncher);
+        jobDataMap.put("jobLocator", jobLocator);
+
+        return JobBuilder.newJob(DaisoQuartzJob.class)
+                .setJobData(jobDataMap)
+                .withIdentity(job.getName())
+                .build();
+    }
+
+    public Trigger makeJobTrigger(JobDetail jobDetail, String jobName, String cronStr){
+        return TriggerBuilder.newTrigger()
+                .forJob(jobDetail)
+                .withIdentity(jobName)
+                .withDescription(cronStr)
+                .withSchedule(CronScheduleBuilder.cronSchedule(cronStr))
+                .build();
+    }
+
+    public JobKey findJobByJobName(String jobName){
+        try {
+            for (JobKey jobKey : this.scheduler.getJobKeys(null)) {
+                if (StringUtils.equalsIgnoreCase(jobKey.getName(), jobName)){
+                    return jobKey;
+                }
+            }
+        }catch (SchedulerException se){
+            log.error("[[ERROR]] findJobByJobName !!! | jobId: {} | msg: {}",jobName,  se.getMessage());
+        }
+        return null;
+    }
+
+    public List<Map<String, Object>> listJobTrigger() throws SchedulerException {
+        List<Map<String, Object>> out = new ArrayList<>() ;
+
+        for (String name : this.scheduler.getTriggerGroupNames())
+        {
+            log.info("name:{}", name);
+            Set<TriggerKey> keys = this.scheduler.getTriggerKeys(GroupMatcher.triggerGroupEquals(name));
+
+            Trigger trigger;
+            for(TriggerKey triggerkey : keys){
+                trigger = this.scheduler.getTrigger(triggerkey);
+                log.info("trigger:{}", trigger);
+                log.info("getJobKey:{}", trigger.getJobKey());
+                log.info("getPreviousFireTime:{}", trigger.getPreviousFireTime());
+                log.info("trigger starttime:{}", trigger.getStartTime());
+                log.info("trigger nexttime:{}", trigger.getNextFireTime());
+                log.info("getDescription:{}", trigger.getDescription());
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("name", trigger.getJobKey());
+                map.put("starttime", trigger.getStartTime());
+                map.put("prevtime", trigger.getPreviousFireTime());
+                map.put("nexttime", trigger.getNextFireTime());
+                map.put("desc", trigger.getDescription());
+                out.add(map);
+            }
+        }
+        return out;
+    }
+
+
+    public List<String> listJobName() {
+        List<String> out = new ArrayList<>();
+
+        try {
+            for (JobKey jobKey : this.scheduler.getJobKeys(null)) {
+                out.add(jobKey.getName());
+            }
+            return out;
+        }catch (SchedulerException se){
+            log.error("[[ERROR]] findJobByJobName !!! | msg: {}",se.getMessage());
+        }
+        return null;
+    }
+
+
+    public boolean addJob(String jobName, String cronStr, PThemeExhbtMgtVO themeExhbtMgtVO){
+        try {
+            JobDetail jobDetail = makeJobDetail(jobName, themeExhbtMgtVO);
+            Trigger trigger = makeJobTrigger(jobDetail, jobName, cronStr);
+
+            this.scheduler.scheduleJob(jobDetail, trigger);
+        }
+        catch (SchedulerException se){
+            log.error("[[ERROR]] addJob !!! | jobId: {} | msg: {}", jobName,  se.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public boolean updateJob(String jobName,String cronStr, PThemeExhbtMgtVO themeExhbtMgtVO) {
+        try {
+            JobDetail jobDetail = makeJobDetail(jobName, themeExhbtMgtVO);
+            Trigger trigger = makeJobTrigger(jobDetail, jobName,cronStr);
+            scheduler.rescheduleJob(new TriggerKey(jobName), trigger);
+        } catch (Exception se) {
+            log.error("[[ERROR]] updateJob !!! | jobId: {} | msg: {}", jobName,  se.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public boolean deleteJob(String jobName){
+        try {
+            this.scheduler.deleteJob(findJobByJobName(jobName));
+            return true;
+        } catch (SchedulerException se){
+            log.error("[[ERROR]] deleteJob !!! | jobId: {} | msg: {}", jobName,  se.getMessage());
+            return false;
+        }
+    }
+
+}
+```
+
+- MybatisMySqlConfig
+
+```java
+@Configuration
+@MapperScan(basePackages = "kr.co.amugerna.batch.**.mapper.mysql", sqlSessionFactoryRef = "mySqlSessionFactory")
+public class MybatisMySqlConfig {
+
+    @Primary
+    @Bean("mySqlDataSource")
+    @ConfigurationProperties(prefix ="spring.datasource.mysql")
+    public DataSource mysqlDataSource(){
+        return DataSourceBuilder.create().build();
+    }
+
+    @Primary
+    @Bean(name = "mySqlSessionFactory")
+    public SqlSessionFactory sqlSessionFactory(
+            @Qualifier("mySqlDataSource") DataSource dataSource, ApplicationContext applicationContext) throws Exception {
+        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+        sqlSessionFactoryBean.setDataSource(dataSource);
+        sqlSessionFactoryBean.setConfigLocation(applicationContext.getResource("classpath:mybatis-config.xml"));
+        sqlSessionFactoryBean.setMapperLocations(applicationContext.getResources("classpath:mapper/oracle/**/*.xml"));
+
+        return sqlSessionFactoryBean.getObject();
+    }
+
+    @Primary
+    @Bean(name = "mySqlSessionTemplate")
+    public SqlSessionTemplate sqlSessionTemplate(
+            @Qualifier("mySqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+        return new SqlSessionTemplate(sqlSessionFactory);
+    }
+}
+```
+
+- ParameterAop
+
+```java
+//@Aspect
+//@Component
+@Slf4j
+public class ParameterAop {
+
+    @Pointcut("execution(* kr.co.amugerna.batch.controller.procedure.*Controller.*(..))")
+    public void onRequest() { }
+
+    @Pointcut("@annotation(org.springframework.web.bind.annotation.PostMapping)")
+    public void postMapping() {}
+
+    @Around("postMapping()")
+    public Object ParameteAction(ProceedingJoinPoint joinPoint) throws Throwable {
+
+        StopWatch stopWatch = new StopWatch();
+	    stopWatch.start();
+
+        Object result = null;
+        try {
+            result = joinPoint.proceed(joinPoint.getArgs());
+            return result;
+        } finally {
+            ObjectMapper objectMapper = new ObjectMapper();
+            stopWatch.stop();
+            log.info("====================================================================");
+            log.info("info: {}.{}",  joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
+            log.info("parameters : {}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(params(joinPoint)));
+            log.info("response : {}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(result));
+            log.info("controller time: {}", stopWatch.getTotalTimeMillis());
+            log.info("controller time: {}", stopWatch.prettyPrint());
+            log.info("====================================================================");
+        }
+    }
+
+    private Map<String, Object> params(JoinPoint joinPoint) {
+      CodeSignature codeSignature = (CodeSignature) joinPoint.getSignature();
+      String[] parameterNames = codeSignature.getParameterNames();
+      Object[] args = joinPoint.getArgs();
+      Map<String, Object> params = new HashMap<>();
+      for (int i = 0; i < parameterNames.length; i++) {
+          params.put(parameterNames[i], args[i]);
+      }
+      return params;
+    }
 }
 ```
 
