@@ -26,13 +26,10 @@ import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 public class JobScheduler extends QuartzJobBean {
-	
-
-    @Override
-    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-		
-    }
-
+  @Override
+  protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+  
+  }
 }
 ```
 
@@ -47,16 +44,16 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 
 public class 동작해야되는스케줄클래스 extends QuartzJobBean {
 	
-    private 내가만든서비스 service;
-    @Override
-    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-        if(service == null) { 
-            ApplicationContext appCtx = (ApplicationContext)context.getJobDetail()
-                .getJobDataMap().get("사용자가지정한이름");
-            service = appCtx.getBean(내가만든서비스.class); 
-        }        
-    }
+  private 내가만든서비스 service;
 
+  @Override
+  protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+    if(service == null) { 
+      ApplicationContext appCtx = (ApplicationContext)context.getJobDetail()
+          .getJobDataMap().get("사용자가지정한이름");
+      service = appCtx.getBean(내가만든서비스.class); 
+    }        
+  }
 }
 ```
 
@@ -89,19 +86,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class 웹설정클래스 implements WebMvcConfigurer{
+  //쿼츠 스케줄을 위한 객체 입니다.
+  private Scheduler scheduler;
+  private ApplicationContext applicationContext;
+  
+  //어플리케이션 영역을 가져오기 위해 사용할 이름입니다.
+  public static String APPLICATION_NAME = "appContext"; 
 
-    //쿼츠 스케줄을 위한 객체 입니다.
-    private Scheduler scheduler;
-    private ApplicationContext applicationContext;
-    
-    //어플리케이션 영역을 가져오기 위해 사용할 이름입니다.
-    public static String APPLICATION_NAME = "appContext"; 
-	
-    //생성자를 통하여 아래 2개의 객체를 받습니다.
-    public 웹설정클래스(Scheduler sch, ApplicationContext applicationContext) {
-        this.scheduler = sch;
-        this.applicationContext = applicationContext;
-    }
+  //생성자를 통하여 아래 2개의 객체를 받습니다.
+  public 웹설정클래스(Scheduler sch, ApplicationContext applicationContext) {
+      this.scheduler = sch;
+      this.applicationContext = applicationContext;
+  }
 }
 ```
 
@@ -135,30 +131,30 @@ import 동작해야되는스케줄클래스;  //사용자가 만든 스케줄클
 @Configuration
 public class 웹설정클래스 implements WebMvcConfigurer{
 
-    //쿼츠 스케줄을 위한 객체 입니다.
-    private Scheduler scheduler;
-    private ApplicationContext applicationContext;
-    
-    //어플리케이션 영역을 가져오기 위해 사용할 이름입니다.
-    public static String APPLICATION_NAME = "appContext"; 
-	
-    //생성자를 통하여 아래 2개의 객체를 받습니다.
-    public 웹설정클래스(Scheduler sch, ApplicationContext applicationContext) {
-        this.scheduler = sch;
-        this.applicationContext = applicationContext;
-    }
+  //쿼츠 스케줄을 위한 객체 입니다.
+  private Scheduler scheduler;
+  private ApplicationContext applicationContext;
+  
+  //어플리케이션 영역을 가져오기 위해 사용할 이름입니다.
+  public static String APPLICATION_NAME = "appContext"; 
 
-    @PostConstruct
-    public void schInint() throws SchedulerException {
-        //크론스케줄을 쓰겠다는 함수
-        final Function<String, Trigger> trigger = (exp)-> TriggerBuilder.newTrigger() 
-            .withSchedule(CronScheduleBuilder.cronSchedule(exp)).build();
+  //생성자를 통하여 아래 2개의 객체를 받습니다.
+  public 웹설정클래스(Scheduler sch, ApplicationContext applicationContext) {
+      this.scheduler = sch;
+      this.applicationContext = applicationContext;
+  }
 
-        JobDataMap ctx = new JobDataMap();  //스케줄러에게 어플리케이션(Application)영역을 넣어 줍니다.  
-        ctx.put(APPLICATION_NAME, applicationContext);  //넣어줄 때 이름은 "appContext" 입니다.
-        JobDetail jobDetail = JobBuilder.newJob(동작해야되는스케줄클래스.class).setJobData(ctx).build();  //스케줄을 생성해서
-        scheduler.scheduleJob(jobDetail, trigger.apply("0/59 * * * * ?"));  //크론형식을 더해 시작합니다
-    }
+  @PostConstruct
+  public void schInint() throws SchedulerException {
+    //크론스케줄을 쓰겠다는 함수
+    final Function<String, Trigger> trigger = (exp)-> TriggerBuilder.newTrigger() 
+        .withSchedule(CronScheduleBuilder.cronSchedule(exp)).build();
+
+    JobDataMap ctx = new JobDataMap();  //스케줄러에게 어플리케이션(Application)영역을 넣어 줍니다.  
+    ctx.put(APPLICATION_NAME, applicationContext);  //넣어줄 때 이름은 "appContext" 입니다.
+    JobDetail jobDetail = JobBuilder.newJob(동작해야되는스케줄클래스.class).setJobData(ctx).build();  //스케줄을 생성해서
+    scheduler.scheduleJob(jobDetail, trigger.apply("0/59 * * * * ?"));  //크론형식을 더해 시작합니다
+  }
 
 }
 ```
@@ -174,17 +170,17 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 
 public class 동작해야되는스케줄클래스 extends QuartzJobBean {
 	
-    private 내가만든서비스 service;
-    @Override
-    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-        if(service == null) { 
-            ApplicationContext appCtx = (ApplicationContext)context.getJobDetail()
-                .getJobDataMap().get("사용자가지정한이름");
-            service = appCtx.getBean(내가만든서비스.class); 
-            System.out.println(service);  //null이 안나오면 성공입니다!! 이제 원하는작업 ㄱㄱ!
-        }        
-    }
+  private 내가만든서비스 service;
 
+  @Override
+  protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+    if(service == null) { 
+      ApplicationContext appCtx = (ApplicationContext)context.getJobDetail()
+          .getJobDataMap().get("사용자가지정한이름");
+      service = appCtx.getBean(내가만든서비스.class); 
+      System.out.println(service);  //null이 안나오면 성공입니다!! 이제 원하는작업 ㄱㄱ!
+    }        
+  }
 }
 ```
 
@@ -223,16 +219,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ScheduleTask {
+  @Scheduled(fixedDelay = 2000)
+  public void task1() {
+      System.out.println("The current date (1) : " + LocalDateTime.now());
+  }
 
-    @Scheduled(fixedDelay = 2000)
-    public void task1() {
-        System.out.println("The current date (1) : " + LocalDateTime.now());
-    }
-
-    @Scheduled(fixedDelayString = "${spring.task.fixedDelay}")
-    public void task2() {
-        System.out.println("The current date (2) : " + LocalDateTime.now());
-    }
+  @Scheduled(fixedDelayString = "${spring.task.fixedDelay}")
+  public void task2() {
+      System.out.println("The current date (2) : " + LocalDateTime.now());
+  }
 }
 ```
 
@@ -242,38 +237,42 @@ public class ScheduleTask {
 
 ### @Scheduled() 어노테이션 설정 정리.
 - fixedDelay
-    - @Scheduled(fixedDelay = 1000)
-    - 이전 작업이 종료된 후 설정시간(밀리터리세컨드) 이후에 다시 시작
+  - @Scheduled(fixedDelay = 1000)
+  - 이전 작업이 종료된 후 설정시간(밀리터리세컨드) 이후에 다시 시작
 
 - fixedDelayString
-    - @Scheduled(fixedDelay = “1000”)
-    - fixedDelay와 동일 하고 지연시간(the delay in milliseconds)을 문자로 입력
+  - @Scheduled(fixedDelay = “1000”)
+  - fixedDelay와 동일 하고 지연시간(the delay in milliseconds)을 문자로 입력
 
 - fixedRate
-    - @Scheduled(fixedRate = 1000)
-    - 설정된 시간마다 시작을 한다. 즉 이전 작업이 종료되지 않아도 시작.
+  - @Scheduled(fixedRate = 1000)
+  - 설정된 시간마다 시작을 한다. 즉 이전 작업이 종료되지 않아도 시작.
 
 - fixedRateString
-    - @Scheduled(fixedRateString = “1000”)
-    - fixedRate와 동일 하고 지연시간(the delay in milliseconds)을 문자로 입력
+  - @Scheduled(fixedRateString = “1000”)
+  - fixedRate와 동일 하고 지연시간(the delay in milliseconds)을 문자로 입력
 
 - initialDelay
-    - @Scheduled(fixedRate = 5000, initialDelay = 3000)
-    - 프로그램이 시작하자마자 작업하는게 아닌 시작을 설정된 시간만큼 지연하여 작동을 시작 한다.(예제는 3초 후 부터 5초 간격으로 작업)
+  - @Scheduled(fixedRate = 5000, initialDelay = 3000)
+  - 프로그램이 시작하자마자 작업하는게 아닌 시작을 설정된 시간만큼 지연하여 작동을 시작 한다.(예제는 3초 후 부터 5초 간격으로 작업)
 
 - initialDelayString
-    - @Scheduled(fixedRate = 5000, initialDelay = “3000”)
-    - initialDelay와 동일 하고 지연시간(the delay in milliseconds)을 문자로 입력
+  - @Scheduled(fixedRate = 5000, initialDelay = “3000”)
+  - initialDelay와 동일 하고 지연시간(the delay in milliseconds)을 문자로 입력
 
 - cron
-    - @Scheduled(cron = "* * * * * *")
-    - 첫번째 부터 위치별 설정 값은
-      초(0-59), 분(0-59), 시간(0-23), 일(1-31), 월(1-12), 요일(0-7)
+  - @Scheduled(cron = "* * * * * *")
+  - 첫번째 부터 위치별 설정 값은 초(0-59), 분(0-59), 시간(0-23), 일(1-31), 월(1-12), 요일(0-7)
+    - * : all
+    - ? : none
+    - m : array
+    - a-b : a부터 b까지
+    - a/b : a부터 b마다. a, a+b, a+b+b, ...
 
 - zone
-    - @Scheduled(cron = "0 0 14 * * *" , zone = "Asia/Seoul")
-    - 미설정시 local 시간대를 사용한다. oracle에서 제공하는 문서를 참조하여 입력 한다.
-    https://docs.oracle.com/cd/B13866_04/webconf.904/b10877/timezone.htm
+  - @Scheduled(cron = "0 0 14 * * *" , zone = "Asia/Seoul")
+  - 미설정시 local 시간대를 사용한다. oracle에서 제공하는 문서를 참조하여 입력 한다.
+  https://docs.oracle.com/cd/B13866_04/webconf.904/b10877/timezone.htm
 
 
 <details>
@@ -290,25 +289,23 @@ public class ScheduleTask {
 @Slf4j
 @NonNullApi
 public class CustomQuartzJob extends QuartzJobBean {
+  @Override
+  protected void executeInternal(JobExecutionContext context) {
+    try{
+      PThemeExhbtMgtVO pthemeExhbtMgtVO = (PThemeExhbtMgtVO) context.getMergedJobDataMap().get("themeExhbtMgtVO");
+      DsThemeExhbtMstVo dsthemeExhbtMstVO = new DsThemeExhbtMstVo();
+      BeanUtils.copyProperties(pthemeExhbtMgtVO, dsthemeExhbtMstVO);
+      ApplicationContext ctx = (ApplicationContext) context.getMergedJobDataMap().get("applicationContext");
+      ThemeExbtService themeExbtService = ctx.getBean(ThemeExbtService.class);
 
-    @Override
-    protected void executeInternal(JobExecutionContext context) {
-        try{
-            PThemeExhbtMgtVO pthemeExhbtMgtVO = (PThemeExhbtMgtVO) context.getMergedJobDataMap().get("themeExhbtMgtVO");
-            DsThemeExhbtMstVo dsthemeExhbtMstVO = new DsThemeExhbtMstVo();
-            BeanUtils.copyProperties(pthemeExhbtMgtVO, dsthemeExhbtMstVO);
-            ApplicationContext ctx = (ApplicationContext) context.getMergedJobDataMap().get("applicationContext");
-            ThemeExbtService themeExbtService = ctx.getBean(ThemeExbtService.class);
+      log.info("themeExhbtMgtVo : {}", pthemeExhbtMgtVO);
+      log.info("themeExbtService:{} ", themeExbtService);
 
-            log.info("themeExhbtMgtVo : {}", pthemeExhbtMgtVO);
-            log.info("themeExbtService:{} ", themeExbtService);
-
-            themeExbtService.themeExbtServiceProc(dsthemeExhbtMstVO, pthemeExhbtMgtVO.getUserId());
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+      themeExbtService.themeExbtServiceProc(dsthemeExhbtMstVO, pthemeExhbtMgtVO.getUserId());
+    } catch (Exception e){
+        e.printStackTrace();
     }
-
+  }
 }
 ```
 
@@ -319,30 +316,27 @@ public class CustomQuartzJob extends QuartzJobBean {
 @RestController
 @Slf4j
 public class JobController {
-
-    @Autowired
-    DynamicScheduleConfig dynamicScheduleConfig;
+  @Autowired
+  DynamicScheduleConfig dynamicScheduleConfig;
 
 //    @Autowired
 //    ThemeExhbtMgtMapper themeExhbtMgtMapper;
 
-    @Autowired
-    @Qualifier("themeExbt")
-    private Job job;
+  @Autowired
+  @Qualifier("themeExbt")
+  private Job job;
 
+  @ApiOperation(value = "테마기획전 자동 업데이트 List", notes = "테마기획전 listThemeJob")
+  @PostMapping("/listThemeJob")
+  public ResponseEntity<Object> listThemeJob() throws SchedulerException {
+    List<Map<String, Object>> out = dynamicScheduleConfig.listJobTrigger();
+    log.info("out: {}", out);
+    return ResponseEntity.ok(new ReturnVo("true", out));
+  }
 
-    @ApiOperation(value = "테마기획전 자동 업데이트 List", notes = "테마기획전 listThemeJob")
-    @PostMapping("/listThemeJob")
-    public ResponseEntity<Object> listThemeJob() throws SchedulerException {
-        List<Map<String, Object>> out = dynamicScheduleConfig.listJobTrigger();
-        log.info("out: {}", out);
-        return ResponseEntity.ok(new ReturnVo("true", out));
-    }
-
-    @PostConstruct
-    public void initThemeAuto()
-    {
-        log.info("===================================================================");
+  @PostConstruct
+  public void initThemeAuto() {
+    log.info("===================================================================");
 
 //        DsThemeExhbtMstVo dsThemeExhbtMstVo = new DsThemeExhbtMstVo();
 //        List<DsThemeExhbtMstVo> dsThemeExhbtMstVoList = themeExhbtMgtMapper.selectThemeAutoUpdate(dsThemeExhbtMstVo);
@@ -363,85 +357,82 @@ public class JobController {
 //                log.info("에러가 발생했습니다. {}", ex.getMessage());
 //            }
 //        }
-        log.info("===================================================================");
+    log.info("===================================================================");
+  }
+
+  private String getCrontabStr(PThemeExhbtMgtVO pThemeExhbtMgtVO) throws MyException {
+    String cronStr ;
+    if ("01".equals(pThemeExhbtMgtVO.getRnewCyclCd())) {    // 30분
+        cronStr = "0 0/30 * 1/1 * ? *";
+        //"0/30 * * * * ?"
+    } else if ("02".equals(pThemeExhbtMgtVO.getRnewCyclCd())) {    // 1시간
+        cronStr = "0 0 0/1 1/1 * ? *";
+    } else if ("03".equals(pThemeExhbtMgtVO.getRnewCyclCd())) {    // 3시간
+        cronStr = "0 0 0/3 1/1 * ? *";
+    } else if ("04".equals(pThemeExhbtMgtVO.getRnewCyclCd())) {    // 6시간
+        cronStr = "0 0 0/6 1/1 * ? *";
+    } else if ("05".equals(pThemeExhbtMgtVO.getRnewCyclCd())) {    // 12시간
+        cronStr = "0 0 0/12 1/1 * ? *";
+    } else if ("06".equals(pThemeExhbtMgtVO.getRnewCyclCd())) {    // 24시간
+        cronStr = "0 0 12 1/1 * ? *";
+    } else {
+        throw new MyException("허용 하지 않는 갱신 주기입니다.");
+    }
+    return cronStr;
+  }
+
+  @ApiOperation(value = "테마 자동 업데이트 추가", notes = "테마 addThemeJob")
+  @PostMapping("/addThemeJob")
+  public ResponseEntity<Object> addThemeJob(@ApiParam("테마 자동") @Valid PThemeExhbtMgtVO pThemeExhbtMgtVO){
+    log.info("addThemeJob : {}", pThemeExhbtMgtVO);
+
+    String jobName = String.format("job_%s", pThemeExhbtMgtVO.getThemeExhbtSq());
+    if (dynamicScheduleConfig.findJobByJobName(jobName) != null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("%s이 이미 존재 합니다.", jobName));
     }
 
-    private String getCrontabStr(PThemeExhbtMgtVO pThemeExhbtMgtVO) throws MyException {
+    try {
+      String cronStr = getCrontabStr(pThemeExhbtMgtVO);
+      dynamicScheduleConfig.addJob(jobName, cronStr, pThemeExhbtMgtVO);
+    }catch(MyException myException ){
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("허용하지 않는 갱신 주기 코드 입니다.");
+    }
+    return ResponseEntity.ok(new ReturnVo("true", ""));
+  }
 
-        String cronStr ;
-        if ("01".equals(pThemeExhbtMgtVO.getRnewCyclCd())) {    // 30분
-            cronStr = "0 0/30 * 1/1 * ? *";
-            //"0/30 * * * * ?"
-        } else if ("02".equals(pThemeExhbtMgtVO.getRnewCyclCd())) {    // 1시간
-            cronStr = "0 0 0/1 1/1 * ? *";
-        } else if ("03".equals(pThemeExhbtMgtVO.getRnewCyclCd())) {    // 3시간
-            cronStr = "0 0 0/3 1/1 * ? *";
-        } else if ("04".equals(pThemeExhbtMgtVO.getRnewCyclCd())) {    // 6시간
-            cronStr = "0 0 0/6 1/1 * ? *";
-        } else if ("05".equals(pThemeExhbtMgtVO.getRnewCyclCd())) {    // 12시간
-            cronStr = "0 0 0/12 1/1 * ? *";
-        } else if ("06".equals(pThemeExhbtMgtVO.getRnewCyclCd())) {    // 24시간
-            cronStr = "0 0 12 1/1 * ? *";
-        } else {
-            throw new MyException("허용 하지 않는 갱신 주기입니다.");
-        }
-        return cronStr;
+  @ApiOperation(value = "테마 자동 업데이트 수정", notes = "테마 editThemeJob")
+  @PostMapping("/editThemeJob")
+  public ResponseEntity<Object> editThemeJob(@ApiParam("테마기획전 자동") @Valid PThemeExhbtMgtVO pThemeExhbtMgtVO){
+    log.info("editThemeJob : {}", pThemeExhbtMgtVO);
+
+    String jobName = String.format("job_%s", pThemeExhbtMgtVO.getThemeExhbtSq());
+    if (dynamicScheduleConfig.findJobByJobName(jobName) == null) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("%s은 존재 하지 않는 job입니다.", jobName));
     }
 
-    @ApiOperation(value = "테마기획전 자동 업데이트 추가", notes = "테마기획전 addThemeJob")
-    @PostMapping("/addThemeJob")
-    public ResponseEntity<Object> addThemeJob(@ApiParam("테마기획전 자동") @Valid PThemeExhbtMgtVO pThemeExhbtMgtVO){
-        log.info("addThemeJob : {}", pThemeExhbtMgtVO);
-
-        String jobName = String.format("job_%s", pThemeExhbtMgtVO.getThemeExhbtSq());
-        if (dynamicScheduleConfig.findJobByJobName(jobName) != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("%s이 이미 존재 합니다.", jobName));
-        }
-
-        try {
-            String cronStr = getCrontabStr(pThemeExhbtMgtVO);
-            dynamicScheduleConfig.addJob(jobName, cronStr, pThemeExhbtMgtVO);
-        }catch(MyException myException ){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("허용하지 않는 갱신 주기 코드 입니다.");
-        }
-
-        return ResponseEntity.ok(new ReturnVo("true", ""));
+    try {
+      String cronStr = getCrontabStr(pThemeExhbtMgtVO);
+      dynamicScheduleConfig.updateJob(jobName, cronStr, pThemeExhbtMgtVO);
+    }catch(MyException myException ){
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("허용하지 않는 갱신 주기 코드 입니다.");
     }
 
-    @ApiOperation(value = "테마기획전 자동 업데이트 수정", notes = "테마기획전 editThemeJob")
-    @PostMapping("/editThemeJob")
-    public ResponseEntity<Object> editThemeJob(@ApiParam("테마기획전 자동") @Valid PThemeExhbtMgtVO pThemeExhbtMgtVO){
-        log.info("editThemeJob : {}", pThemeExhbtMgtVO);
+    return ResponseEntity.ok(new ReturnVo("true", ""));
+  }
 
-        String jobName = String.format("job_%s", pThemeExhbtMgtVO.getThemeExhbtSq());
-        if (dynamicScheduleConfig.findJobByJobName(jobName) == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("%s은 존재 하지 않는 job입니다.", jobName));
-        }
+  @ApiOperation(value = "자동 업데이트 삭제", notes = "테마 stopThemeJob")
+  @PostMapping("/stopThemeJob")
+  public ResponseEntity<Object> stopThemeJob(@ApiParam("테마 자동") @Valid DThemeExhbtMgtVO dThemeExhbtMgtVO){
+    log.info("stopThemeJob : {}", dThemeExhbtMgtVO);
 
-        try {
-            String cronStr = getCrontabStr(pThemeExhbtMgtVO);
-            dynamicScheduleConfig.updateJob(jobName, cronStr, pThemeExhbtMgtVO);
-        }catch(MyException myException ){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("허용하지 않는 갱신 주기 코드 입니다.");
-        }
-
-        return ResponseEntity.ok(new ReturnVo("true", ""));
+    String jobName = String.format("job_%s", dThemeExhbtMgtVO.getThemeExhbtSq());
+    if (dynamicScheduleConfig.findJobByJobName(jobName) == null) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("%s은 존재 하지 않는 job입니다.", jobName));
     }
+    dynamicScheduleConfig.deleteJob(jobName);
 
-    @ApiOperation(value = "테마기획전 자동 업데이트 삭제", notes = "테마기획전 stopThemeJob")
-    @PostMapping("/stopThemeJob")
-    public ResponseEntity<Object> stopThemeJob(@ApiParam("테마기획전 자동") @Valid DThemeExhbtMgtVO dThemeExhbtMgtVO){
-
-        log.info("stopThemeJob : {}", dThemeExhbtMgtVO);
-
-        String jobName = String.format("job_%s", dThemeExhbtMgtVO.getThemeExhbtSq());
-        if (dynamicScheduleConfig.findJobByJobName(jobName) == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("%s은 존재 하지 않는 job입니다.", jobName));
-        }
-        dynamicScheduleConfig.deleteJob(jobName);
-
-        return ResponseEntity.ok(new ReturnVo("true", ""));
-    }
+    return ResponseEntity.ok(new ReturnVo("true", ""));
+  }
 }
 ```
 
@@ -454,193 +445,190 @@ public class JobController {
 @EnableScheduling
 public class BatchScheduler {
 
-    @Autowired
-    private JobLauncher jobLauncher;
+  @Autowired
+  private JobLauncher jobLauncher;
 
-    @Autowired
-    protected JobRegistry jobRegistry;
+  @Autowired
+  protected JobRegistry jobRegistry;
 
-    @Autowired
-    JobExplorer jobExplorer;
+  @Autowired
+  JobExplorer jobExplorer;
 
-    @Autowired
-    private Job userUpdateBatch;
+  @Autowired
+  private Job userUpdateBatch;
 
-    @Autowired
-    @Qualifier("UpdateGoogleContentApiBatch")
-    private Job UpdateGoogleContentApiJob;
+  @Autowired
+  @Qualifier("UpdateGoogleContentApiBatch")
+  private Job UpdateGoogleContentApiJob;
 
-    /**
-     * 실행주기 0 0 2 * * * (1일 / 1회 / 02시)
-     */
-    @Scheduled(cron="0 0 2 * * *")
-    public void DeleteSearchCarBatch() {
-        try {
+  /**
+    * 실행주기 0 0 2 * * * (1일 / 1회 / 02시)
+    */
+  @Scheduled(cron="0 0 2 * * *")
+  public void DeleteSearchCarBatch() {
+    try {
+      JobParameters jobParameters = new JobParametersBuilder()
+              .addDate("date", new Date())
+              .toJobParameters();
 
-            JobParameters jobParameters = new JobParametersBuilder()
-                    .addDate("date", new Date())
-                    .toJobParameters();
+      JobExecution jobExecution = jobLauncher.run(deleteSearchCarBatchJob, jobParameters);
 
-            JobExecution jobExecution = jobLauncher.run(deleteSearchCarBatchJob, jobParameters);
-
-            log.info("name : {} ", jobExecution.getJobInstance().getJobName());
-            log.info("status : {}", jobExecution.getStatus());
-        } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
-                | JobParametersInvalidException e) {
-            e.printStackTrace();
-        }
+      log.info("name : {} ", jobExecution.getJobInstance().getJobName());
+      log.info("status : {}", jobExecution.getStatus());
+    } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
+      e.printStackTrace();
     }
+  }
 
-    /**
-     * 실행주기 1일 / 1회 / 10시
-     */
-    @Scheduled(cron="0 0 10 * * *")
+  /**
+    * 실행주기 1일 / 1회 / 10시
+    */
+  @Scheduled(cron="0 0 10 * * *")
 
-    /**
-     * 실행주기 1일 / 1회 / 00시
-     */
-    @Scheduled(cron="0 0 0 * * *")
+  /**
+    * 실행주기 1일 / 1회 / 00시
+    */
+  @Scheduled(cron="0 0 0 * * *")
 
 /**
-     * 실행주기 1일 / 1회 / 22시
-     */
-    @Scheduled(cron="0 0 22 * * *")
+    * 실행주기 1일 / 1회 / 22시
+    */
+  @Scheduled(cron="0 0 22 * * *")
 
-    /**
-     * 실행주기 1일 / 1시간마다
-     */
-    @Scheduled(cron="0 0 */1 * * *")
+  /**
+    * 실행주기 1일 / 1시간마다
+    */
+  @Scheduled(cron="0 0 */1 * * *")
 
-    /**
-     * 실행주기 1일 / 1회 / 21시48분
-     */
-    @Scheduled(cron="0 48 21 * * *")
+  /**
+    * 실행주기 1일 / 1회 / 21시48분
+    */
+  @Scheduled(cron="0 48 21 * * *")
 
-    /**
-     * 실행주기 1일 / 1회 / 21시48분
-     */
-    @Scheduled(cron="0 48 12 * * *")
+  /**
+    * 실행주기 1일 / 1회 / 21시48분
+    */
+  @Scheduled(cron="0 48 12 * * *")
 
-    /**
-     * 실행주기 매시 10분마다 배치 동작
-     */
-    @Scheduled(cron="0 */10 * * * *")
+  /**
+    * 실행주기 매시 10분마다 배치 동작
+    */
+  @Scheduled(cron="0 */10 * * * *")
 
-    /**
-     * 실행주기 1일 / 8-20시 / 3분
-     */
-    @Scheduled(cron="0 */3 8-20 * * *")
+  /**
+    * 실행주기 1일 / 8-20시 / 3분
+    */
+  @Scheduled(cron="0 */3 8-20 * * *")
 
-    /**
-     * 실행주기 1일 / 매시간마다
-     */
-    @Scheduled(cron="0 0 */1 * * *")
+  /**
+    * 실행주기 1일 / 매시간마다
+    */
+  @Scheduled(cron="0 0 */1 * * *")
 
-    /**
-     * 실행주기 1일 / 8-20시 / 05분, 35분마다
-     */
-    @Scheduled(cron="0 05,35 8-20 * * *")
+  /**
+    * 실행주기 1일 / 8-20시 / 05분, 35분마다
+    */
+  @Scheduled(cron="0 05,35 8-20 * * *")
 
-    /**
-     * 실행주기 1일 / 1회 / 00시 10분
-     */
-    @Scheduled(cron="0 10 0 * * *")
+  /**
+    * 실행주기 1일 / 1회 / 00시 10분
+    */
+  @Scheduled(cron="0 10 0 * * *")
 
-    /**
-     * 실행주기 매일 / 1시간마다
-     */
-    @Scheduled(cron="0 0 */1 * * *")
+  /**
+    * 실행주기 매일 / 1시간마다
+    */
+  @Scheduled(cron="0 0 */1 * * *")
 
-    /**
-     * 실행주기 1일 / 8-23시 매시간마다
-     */
-    @Scheduled(cron="0 0 08-23/1 * * *")
+  /**
+    * 실행주기 1일 / 8-23시 매시간마다
+    */
+  @Scheduled(cron="0 0 08-23/1 * * *")
 
-    /*
-     * @실행주기 1일 / 10분마다
-     */
-    @Scheduled(cron="0 */10 * * * *")
+  /*
+    * @실행주기 1일 / 10분마다
+    */
+  @Scheduled(cron="0 */10 * * * *")
 
-    /*
-     * @실행주기 1일 / 1회 / 00시 10분
-     */
-    @Scheduled(cron="0 10 0 * * *")
+  /*
+    * @실행주기 1일 / 1회 / 00시 10분
+    */
+  @Scheduled(cron="0 10 0 * * *")
 
-    /*
-     * @실행주기 1일 / 2시간마다
-     */
-    @Scheduled(cron="0 0 */2 * * *")
+  /*
+    * @실행주기 1일 / 2시간마다
+    */
+  @Scheduled(cron="0 0 */2 * * *")
 
-    /*
-     * @실행주기    1일 / 9-18시 / 30분
-     */
-    @Scheduled(cron="0 */30 9,10,11,12,13,14,15,16,17,18 * * *")
+  /*
+    * @실행주기    1일 / 9-18시 / 30분
+    */
+  @Scheduled(cron="0 */30 9,10,11,12,13,14,15,16,17,18 * * *")
 
-    /*
-     * @실행주기    1일 / 1회 / 2시
-     */
-    @Scheduled(cron="0 0 2 * * *")
+  /*
+    * @실행주기    1일 / 1회 / 2시
+    */
+  @Scheduled(cron="0 0 2 * * *")
 
-    /*
-     * @실행주기    1일 / 1회 / 5시
-     */
-    @Scheduled(cron="0 0 5 * * *")
+  /*
+    * @실행주기    1일 / 1회 / 5시
+    */
+  @Scheduled(cron="0 0 5 * * *")
 
-    /*
-     * @실행주기    1일 / 20분마다
-     */
-    @Scheduled(cron="0 */20 * * * *")
+  /*
+    * @실행주기    1일 / 20분마다
+    */
+  @Scheduled(cron="0 */20 * * * *")
 
-    /*
-     * @실행주기    1일 / 1회 / 2시
-     */
-    @Scheduled(cron="0 0 2 * * *")
+  /*
+    * @실행주기    1일 / 1회 / 2시
+    */
+  @Scheduled(cron="0 0 2 * * *")
 
-   /*
-     * @실행주기    1일 / 1회 / 10시
-     */
-    @Scheduled(cron="0 0 10 * * *")
+  /*
+    * @실행주기    1일 / 1회 / 10시
+    */
+  @Scheduled(cron="0 0 10 * * *")
 
-    /*
-     * @실행주기 1일 / 09시 30분
-     */
-    @Scheduled(cron="0 30 9 * * ?")
+  /*
+    * @실행주기 1일 / 09시 30분
+    */
+  @Scheduled(cron="0 30 9 * * ?")
 
-    /*
-     * @실행주기 1일 / 00시 00분
-     */
-    @Scheduled(cron="0 0 0 * * ?")
-    public void updateMemeberLeaveBatchJob(){
-        JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
-        try {
-            JobExecution jobExecution = jobLauncher.run(updateMemberLeaveJob, jobParameters);
-            log.info("JOB STATUS:::{}", jobExecution.getStatus());
-            log.info("JOB IS:::{}", jobExecution);
-        } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
-                | JobParametersInvalidException e) {
-            e.printStackTrace();
-        }
+  /*
+    * @실행주기 1일 / 00시 00분
+    */
+  @Scheduled(cron="0 0 0 * * ?")
+  public void updateMemeberLeaveBatchJob(){
+    JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
+    try {
+      JobExecution jobExecution = jobLauncher.run(updateMemberLeaveJob, jobParameters);
+      log.info("JOB STATUS:::{}", jobExecution.getStatus());
+      log.info("JOB IS:::{}", jobExecution);
+    } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
+      e.printStackTrace();
     }
+  }
 
-    /*
-     * @실행주기 30분마다 실행
-     */
-    @Scheduled(cron="0 */30 * * * *")
+  /*
+    * @실행주기 30분마다 실행
+    */
+  @Scheduled(cron="0 */30 * * * *")
 
-    /*
-     * @실행주기 12월 28일 10시
-     */
-    @Scheduled(cron="0 0 10 28 12 *")
+  /*
+    * @실행주기 12월 28일 10시
+    */
+  @Scheduled(cron="0 0 10 28 12 *")
 
-    /*
-     * @실행주기    1일 / 1시간마다
-     */
-    @Scheduled(cron="0 0 */1 * * *")
+  /*
+    * @실행주기    1일 / 1시간마다
+    */
+  @Scheduled(cron="0 0 */1 * * *")
 
-    /*
-     * @실행주기    1일 / 3시
-     */
-    @Scheduled(cron="0 0 3 * * *")
+  /*
+    * @실행주기    1일 / 3시
+    */
+  @Scheduled(cron="0 0 3 * * *")
 }
 ```
 
