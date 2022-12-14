@@ -228,5 +228,138 @@ public class CustomQuartzJob extends QuartzJobBean {
 }
 ```
 
+- JobController
+
+```java
+@Api(tags={"4. 테마기획전"})
+@RestController
+@Slf4j
+public class JobController {
+
+    @Autowired
+    DynamicScheduleConfig dynamicScheduleConfig;
+
+//    @Autowired
+//    ThemeExhbtMgtMapper themeExhbtMgtMapper;
+
+    @Autowired
+    @Qualifier("themeExbt")
+    private Job job;
+
+
+    @ApiOperation(value = "테마기획전 자동 업데이트 List", notes = "테마기획전 listThemeJob")
+    @PostMapping("/listThemeJob")
+    public ResponseEntity<Object> listThemeJob() throws SchedulerException {
+        List<Map<String, Object>> out = dynamicScheduleConfig.listJobTrigger();
+        log.info("out: {}", out);
+        return ResponseEntity.ok(new ReturnVo("true", out));
+    }
+
+    @PostConstruct
+    public void initThemeAuto()
+    {
+        log.info("===================================================================");
+
+//        DsThemeExhbtMstVo dsThemeExhbtMstVo = new DsThemeExhbtMstVo();
+//        List<DsThemeExhbtMstVo> dsThemeExhbtMstVoList = themeExhbtMgtMapper.selectThemeAutoUpdate(dsThemeExhbtMstVo);
+//
+//        String userId = "SYSTEM";
+//        for(DsThemeExhbtMstVo vo : dsThemeExhbtMstVoList) {
+//            log.info("{}, {}, {}, {}, {}", vo.getThemeExhbtSq(), vo.getThemeExhbtTitl(), vo.getCarRnewDcd(), vo.getRnewCyclCd(), userId);
+//            PThemeExhbtMgtVO pThemeExhbtMgtVO = new PThemeExhbtMgtVO();
+//            BeanUtils.copyProperties(vo, pThemeExhbtMgtVO);
+//            pThemeExhbtMgtVO.setUserId(userId);
+//
+//            String jobName = String.format("job_%s", pThemeExhbtMgtVO.getThemeExhbtSq());
+//
+//            try {
+//                String cronStr = getCrontabStr(pThemeExhbtMgtVO);
+//                dynamicScheduleConfig.addJob(jobName, cronStr, pThemeExhbtMgtVO);
+//            }catch(MyException ex){
+//                log.info("에러가 발생했습니다. {}", ex.getMessage());
+//            }
+//        }
+        log.info("===================================================================");
+    }
+
+    private String getCrontabStr(PThemeExhbtMgtVO pThemeExhbtMgtVO) throws MyException {
+
+        String cronStr ;
+        if ("01".equals(pThemeExhbtMgtVO.getRnewCyclCd())) {    // 30분
+            cronStr = "0 0/30 * 1/1 * ? *";
+            //"0/30 * * * * ?"
+        } else if ("02".equals(pThemeExhbtMgtVO.getRnewCyclCd())) {    // 1시간
+            cronStr = "0 0 0/1 1/1 * ? *";
+        } else if ("03".equals(pThemeExhbtMgtVO.getRnewCyclCd())) {    // 3시간
+            cronStr = "0 0 0/3 1/1 * ? *";
+        } else if ("04".equals(pThemeExhbtMgtVO.getRnewCyclCd())) {    // 6시간
+            cronStr = "0 0 0/6 1/1 * ? *";
+        } else if ("05".equals(pThemeExhbtMgtVO.getRnewCyclCd())) {    // 12시간
+            cronStr = "0 0 0/12 1/1 * ? *";
+        } else if ("06".equals(pThemeExhbtMgtVO.getRnewCyclCd())) {    // 24시간
+            cronStr = "0 0 12 1/1 * ? *";
+        } else {
+            throw new MyException("허용 하지 않는 갱신 주기입니다.");
+        }
+        return cronStr;
+    }
+
+    @ApiOperation(value = "테마기획전 자동 업데이트 추가", notes = "테마기획전 addThemeJob")
+    @PostMapping("/addThemeJob")
+    public ResponseEntity<Object> addThemeJob(@ApiParam("테마기획전 자동") @Valid PThemeExhbtMgtVO pThemeExhbtMgtVO){
+        log.info("addThemeJob : {}", pThemeExhbtMgtVO);
+
+        String jobName = String.format("job_%s", pThemeExhbtMgtVO.getThemeExhbtSq());
+        if (dynamicScheduleConfig.findJobByJobName(jobName) != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("%s이 이미 존재 합니다.", jobName));
+        }
+
+        try {
+            String cronStr = getCrontabStr(pThemeExhbtMgtVO);
+            dynamicScheduleConfig.addJob(jobName, cronStr, pThemeExhbtMgtVO);
+        }catch(MyException myException ){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("허용하지 않는 갱신 주기 코드 입니다.");
+        }
+
+        return ResponseEntity.ok(new ReturnVo("true", ""));
+    }
+
+    @ApiOperation(value = "테마기획전 자동 업데이트 수정", notes = "테마기획전 editThemeJob")
+    @PostMapping("/editThemeJob")
+    public ResponseEntity<Object> editThemeJob(@ApiParam("테마기획전 자동") @Valid PThemeExhbtMgtVO pThemeExhbtMgtVO){
+        log.info("editThemeJob : {}", pThemeExhbtMgtVO);
+
+        String jobName = String.format("job_%s", pThemeExhbtMgtVO.getThemeExhbtSq());
+        if (dynamicScheduleConfig.findJobByJobName(jobName) == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("%s은 존재 하지 않는 job입니다.", jobName));
+        }
+
+        try {
+            String cronStr = getCrontabStr(pThemeExhbtMgtVO);
+            dynamicScheduleConfig.updateJob(jobName, cronStr, pThemeExhbtMgtVO);
+        }catch(MyException myException ){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("허용하지 않는 갱신 주기 코드 입니다.");
+        }
+
+        return ResponseEntity.ok(new ReturnVo("true", ""));
+    }
+
+    @ApiOperation(value = "테마기획전 자동 업데이트 삭제", notes = "테마기획전 stopThemeJob")
+    @PostMapping("/stopThemeJob")
+    public ResponseEntity<Object> stopThemeJob(@ApiParam("테마기획전 자동") @Valid DThemeExhbtMgtVO dThemeExhbtMgtVO){
+
+        log.info("stopThemeJob : {}", dThemeExhbtMgtVO);
+
+        String jobName = String.format("job_%s", dThemeExhbtMgtVO.getThemeExhbtSq());
+        if (dynamicScheduleConfig.findJobByJobName(jobName) == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("%s은 존재 하지 않는 job입니다.", jobName));
+        }
+        dynamicScheduleConfig.deleteJob(jobName);
+
+        return ResponseEntity.ok(new ReturnVo("true", ""));
+    }
+}
+```
+
   </pre>
 </details>
