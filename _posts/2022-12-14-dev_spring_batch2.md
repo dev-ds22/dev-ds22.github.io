@@ -192,6 +192,90 @@ public class 동작해야되는스케줄클래스 extends QuartzJobBean {
 스케줄러의 객체를 관리하고 선언하며, 직접적인 접근을 통해 세부적인 설정을 하는 예시가 많습니다.
 이러한 방법은 프로젝트의 구성, 라이브러리의 버전 및 기타 환경등에 의해서 잘 안되는 경우가 많습니다.
 
+
+## @Scheduled 이용한 Batch 작업
+예전에 Quartz를 이용해서 작업할 때 보다는 @Scheduled annotation을 사용하면 배치 작업을 무척 쉽게 만들 수 있습니다.
+
+```java
+package com.copycoding.batch;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+@SpringBootApplication
+@EnableScheduling
+public class BatchApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(BatchApplication.class, args);
+    }
+}
+```
+
+- @EnableScheduling 어노테이션을 추가.
+
+### 실제 스케쥴 작업할 class 파일.
+
+```java
+package com.copycoding.batch;
+import java.time.LocalDateTime;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ScheduleTask {
+
+    @Scheduled(fixedDelay = 2000)
+    public void task1() {
+        System.out.println("The current date (1) : " + LocalDateTime.now());
+    }
+
+    @Scheduled(fixedDelayString = "${spring.task.fixedDelay}")
+    public void task2() {
+        System.out.println("The current date (2) : " + LocalDateTime.now());
+    }
+}
+```
+
+- 중요한건 class 파일에 @Component를 설정해야 합니다.  
+- 이렇게 두개의 어노테이션을 적어주기만 하면 설정 끝.
+- 이제 메소드를 만들고 @Scheduled를 이용해서 메소드의 작동 시간을 입력하고 코딩 
+
+### @Scheduled() 어노테이션 설정 정리.
+- fixedDelay
+    - @Scheduled(fixedDelay = 1000)
+    - 이전 작업이 종료된 후 설정시간(밀리터리세컨드) 이후에 다시 시작
+
+- fixedDelayString
+    - @Scheduled(fixedDelay = “1000”)
+    - fixedDelay와 동일 하고 지연시간(the delay in milliseconds)을 문자로 입력
+
+- fixedRate
+    - @Scheduled(fixedRate = 1000)
+    - 설정된 시간마다 시작을 한다. 즉 이전 작업이 종료되지 않아도 시작.
+
+- fixedRateString
+    - @Scheduled(fixedRateString = “1000”)
+    - fixedRate와 동일 하고 지연시간(the delay in milliseconds)을 문자로 입력
+
+- initialDelay
+    - @Scheduled(fixedRate = 5000, initialDelay = 3000)
+    - 프로그램이 시작하자마자 작업하는게 아닌 시작을 설정된 시간만큼 지연하여 작동을 시작 한다.(예제는 3초 후 부터 5초 간격으로 작업)
+
+- initialDelayString
+    - @Scheduled(fixedRate = 5000, initialDelay = “3000”)
+    - initialDelay와 동일 하고 지연시간(the delay in milliseconds)을 문자로 입력
+
+- cron
+    - @Scheduled(cron = "* * * * * *")
+    - 첫번째 부터 위치별 설정 값은
+      초(0-59), 분(0-59), 시간(0-23), 일(1-31), 월(1-12), 요일(0-7)
+
+- zone
+    - @Scheduled(cron = "0 0 14 * * *" , zone = "Asia/Seoul")
+    - 미설정시 local 시간대를 사용한다. oracle에서 제공하는 문서를 참조하여 입력 한다.
+    https://docs.oracle.com/cd/B13866_04/webconf.904/b10877/timezone.htm
+
+
 <details>
   <summary>Exp.</summary>  
   <pre>
@@ -360,6 +444,206 @@ public class JobController {
     }
 }
 ```
+
+
+- BatchScheduler
+
+```java
+@Slf4j
+@Component
+@EnableScheduling
+public class BatchScheduler {
+
+    @Autowired
+    private JobLauncher jobLauncher;
+
+    @Autowired
+    protected JobRegistry jobRegistry;
+
+    @Autowired
+    JobExplorer jobExplorer;
+
+    @Autowired
+    private Job userUpdateBatch;
+
+    @Autowired
+    @Qualifier("UpdateGoogleContentApiBatch")
+    private Job UpdateGoogleContentApiJob;
+
+    /**
+     * 실행주기 0 0 2 * * * (1일 / 1회 / 02시)
+     */
+    @Scheduled(cron="0 0 2 * * *")
+    public void DeleteSearchCarBatch() {
+        try {
+
+            JobParameters jobParameters = new JobParametersBuilder()
+                    .addDate("date", new Date())
+                    .toJobParameters();
+
+            JobExecution jobExecution = jobLauncher.run(deleteSearchCarBatchJob, jobParameters);
+
+            log.info("name : {} ", jobExecution.getJobInstance().getJobName());
+            log.info("status : {}", jobExecution.getStatus());
+        } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
+                | JobParametersInvalidException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 실행주기 1일 / 1회 / 10시
+     */
+    @Scheduled(cron="0 0 10 * * *")
+
+    /**
+     * 실행주기 1일 / 1회 / 00시
+     */
+    @Scheduled(cron="0 0 0 * * *")
+
+/**
+     * 실행주기 1일 / 1회 / 22시
+     */
+    @Scheduled(cron="0 0 22 * * *")
+
+    /**
+     * 실행주기 1일 / 1시간마다
+     */
+    @Scheduled(cron="0 0 */1 * * *")
+
+    /**
+     * 실행주기 1일 / 1회 / 21시48분
+     */
+    @Scheduled(cron="0 48 21 * * *")
+
+    /**
+     * 실행주기 1일 / 1회 / 21시48분
+     */
+    @Scheduled(cron="0 48 12 * * *")
+
+    /**
+     * 실행주기 매시 10분마다 배치 동작
+     */
+    @Scheduled(cron="0 */10 * * * *")
+
+    /**
+     * 실행주기 1일 / 8-20시 / 3분
+     */
+    @Scheduled(cron="0 */3 8-20 * * *")
+
+    /**
+     * 실행주기 1일 / 매시간마다
+     */
+    @Scheduled(cron="0 0 */1 * * *")
+
+    /**
+     * 실행주기 1일 / 8-20시 / 05분, 35분마다
+     */
+    @Scheduled(cron="0 05,35 8-20 * * *")
+
+    /**
+     * 실행주기 1일 / 1회 / 00시 10분
+     */
+    @Scheduled(cron="0 10 0 * * *")
+
+    /**
+     * 실행주기 매일 / 1시간마다
+     */
+    @Scheduled(cron="0 0 */1 * * *")
+
+    /**
+     * 실행주기 1일 / 8-23시 매시간마다
+     */
+    @Scheduled(cron="0 0 08-23/1 * * *")
+
+    /*
+     * @실행주기 1일 / 10분마다
+     */
+    @Scheduled(cron="0 */10 * * * *")
+
+    /*
+     * @실행주기 1일 / 1회 / 00시 10분
+     */
+    @Scheduled(cron="0 10 0 * * *")
+
+    /*
+     * @실행주기 1일 / 2시간마다
+     */
+    @Scheduled(cron="0 0 */2 * * *")
+
+    /*
+     * @실행주기    1일 / 9-18시 / 30분
+     */
+    @Scheduled(cron="0 */30 9,10,11,12,13,14,15,16,17,18 * * *")
+
+    /*
+     * @실행주기    1일 / 1회 / 2시
+     */
+    @Scheduled(cron="0 0 2 * * *")
+
+    /*
+     * @실행주기    1일 / 1회 / 5시
+     */
+    @Scheduled(cron="0 0 5 * * *")
+
+    /*
+     * @실행주기    1일 / 20분마다
+     */
+    @Scheduled(cron="0 */20 * * * *")
+
+    /*
+     * @실행주기    1일 / 1회 / 2시
+     */
+    @Scheduled(cron="0 0 2 * * *")
+
+   /*
+     * @실행주기    1일 / 1회 / 10시
+     */
+    @Scheduled(cron="0 0 10 * * *")
+
+    /*
+     * @실행주기 1일 / 09시 30분
+     */
+    @Scheduled(cron="0 30 9 * * ?")
+
+    /*
+     * @실행주기 1일 / 00시 00분
+     */
+    @Scheduled(cron="0 0 0 * * ?")
+    public void updateMemeberLeaveBatchJob(){
+        JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters();
+        try {
+            JobExecution jobExecution = jobLauncher.run(updateMemberLeaveJob, jobParameters);
+            log.info("JOB STATUS:::{}", jobExecution.getStatus());
+            log.info("JOB IS:::{}", jobExecution);
+        } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
+                | JobParametersInvalidException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
+     * @실행주기 30분마다 실행
+     */
+    @Scheduled(cron="0 */30 * * * *")
+
+    /*
+     * @실행주기 12월 28일 10시
+     */
+    @Scheduled(cron="0 0 10 28 12 *")
+
+    /*
+     * @실행주기    1일 / 1시간마다
+     */
+    @Scheduled(cron="0 0 */1 * * *")
+
+    /*
+     * @실행주기    1일 / 3시
+     */
+    @Scheduled(cron="0 0 3 * * *")
+}
+```
+
 
   </pre>
 </details>
