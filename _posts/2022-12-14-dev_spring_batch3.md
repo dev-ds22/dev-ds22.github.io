@@ -15,6 +15,21 @@ date: 2022-12-14
 last_modified_at: 2022-12-14
 ---
 # Spring Batch 정리 #3
+
+![spring_batch_step](./../../images/tech/image_spring_batch.png)
+
+- Jop : 빨래
+  - Step : 설정
+    - Tasklet : A사 세제를 넣는다
+    - Tasklet : A사 섬유유연제를 넣는다
+    - Tasklet : 세탁, 헹굼, 탈수 시간을 정한다
+  - Step : 세탁
+    - Tasklet : 일정시간동안 세탁을 진행한다
+  - Step : 헹굼
+    - Tasklet : 일정시간동안 헹굼을 진행한다
+  - Step : 탈수
+    - Takslet : 일정시간동안 탈수를 
+
 ### SimpleJob
 - SimpleJob은 Step을 실행시키는 Job 구현체로서 SimpleJobBuilder에 의해 생성된다.
 - 여러 단계의 Step을 구성할 수 있으면 Step을 순차적으로 실행시킨다.
