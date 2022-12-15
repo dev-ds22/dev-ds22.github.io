@@ -262,6 +262,9 @@ last_modified_at: 2022-12-15
   send test~~~~~
 ```
 
+스프링 구현관련애서는 이하 사이트 정리필요
+https://sup2is.github.io/2020/06/03/spring-boot-with-kafka-cluster.html
+
 <details>
   <summary>Exp.</summary>  
   <pre>
