@@ -31,7 +31,7 @@ last_modified_at: 2022-12-14
     - Takslet : 일정시간동안 탈수를 
 
 ### SimpleJob
-- SimpleJob은 Step을 실행시키는 Job 구현체로서 SimpleJobBuilder에 의해 생성된다.
+- SimpleJob은 Step을 실행시키는 Job 구현체로서 SimpgitleJobBuilder에 의해 생성된다.
 - 여러 단계의 Step을 구성할 수 있으면 Step을 순차적으로 실행시킨다.
 - 모든 Step의 시랳ㅇ이 성공적으로 완료되어야 Job이 성공적으로 완료된다.
 - 맨 마지막에 실행한 Step의 BatchStatus가 Job의 최종 BatchStatus가 된다.
