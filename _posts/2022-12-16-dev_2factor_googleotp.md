@@ -27,15 +27,48 @@ last_modified_at: 2022-12-16
 
 - totp, commons-codec, zxing 의존성 추가
 
+- implementation group: 'de.taimos', name: 'totp', version: '1.0'
+  - https://mvnrepository.com/artifact/de.taimos/totp
+
+- implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
+  - https://mvnrepository.com/artifact/commons-codec/commons-codec
+
+- implementation group: 'com.google.zxing', name: 'javase', version: '3.4.1'
+  - https://mvnrepository.com/artifact/com.google.zxing/javase
+
+
 ```gradle
-  // https://mvnrepository.com/artifact/de.taimos/totp
-  implementation group: 'de.taimos', name: 'totp', version: '1.0'
+  plugins {
+    id 'org.springframework.boot' version '2.4.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id 'war'
+  }
 
-  // https://mvnrepository.com/artifact/commons-codec/commons-codec
-  implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
+  group = 'com.example.opt'
+  version = '0.0.1-SNAPSHOT'
+  sourceCompatibility = '1.8'
 
-  // https://mvnrepository.com/artifact/com.google.zxing/javase
-  implementation group: 'com.google.zxing', name: 'javase', version: '3.4.1'
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+      // 추가 
+    implementation 'de.taimos:totp:1.0'
+      // 추가 
+    implementation 'commons-codec:commons-codec:1.10'
+      // 추가 
+    implementation 'com.google.zxing:javase:3.2.1'
+
+      providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  }
+
+  test {
+    useJUnitPlatform()
+  }
 ```
  
 ### TOTP (Time based One-time Password)
