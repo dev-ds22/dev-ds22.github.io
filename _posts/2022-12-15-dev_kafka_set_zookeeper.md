@@ -66,6 +66,7 @@ last_modified_at: 2022-12-15
 ## Zookeeper 실행하기
 
 ```powershell
+  $ cd C:\daiso\kafka\kafka_2.13-3.3.1
   $ ./bin/windows/zookeeper-server-start.bat ./config/zookeeper.properties
 ```
 
@@ -192,6 +193,7 @@ last_modified_at: 2022-12-15
 - kafka 압축을 푼 base 폴더로 이동한 후 다음 명령어 입력.
 
 ```powershell
+  $ cd C:\daiso\kafka\kafka_2.13-3.3.1
   $ bin/windows/kafka-server-start.bat config/server.properties
 ```
 
