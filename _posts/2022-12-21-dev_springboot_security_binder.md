@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "[SECURE] Spring Java 프레임워크 보안 업데이트 권고("
+title: "[SECURE] Spring Java 프레임워크 보안 업데이트 권고"
 excerpt: "보안 업데이트 권고 (CVE-2022-22965, CVE-2022-22963)"
 
 categories:
