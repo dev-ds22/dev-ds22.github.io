@@ -144,5 +144,50 @@ final class ThreadLocalSecurityContextHolderStrategy implements
 
 ### 참조
 
+- 위 내용과는 무관(Spring Security Filter인듯해 남겨둠)  
+- UrlDecodeFilter.java  
+  
+```java
+  @Component
+  public class UrlDecodeFilter extends OncePerRequestFilter {
+
+    public class UrlDecodeWrapper extends HttpServletRequestWrapper {
+        HttpServletRequest request;
+
+      public UrlDecodeWrapper(HttpServletRequest request) {
+        super(request);
+        this.request = request;
+      }
+
+      public String[] getParameterValues(String name) {
+        String[] result = null;
+        try {
+            result = Arrays.stream(request.getParameterValues(name))
+                    .map(param -> decode(param, "UTF-8"))
+                    .toArray(String[]::new);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+      }
+
+      public String decode(String s, String enc) {
+        try {
+            return URLDecoder.decode(s, enc);
+        } catch (UnsupportedEncodingException e) {
+            return null;
+        }
+      }
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+      UrlDecodeWrapper urlDecodeWrapper = new UrlDecodeWrapper((HttpServletRequest) request);
+      
+      filterChain.doFilter(urlDecodeWrapper, response);
+    }
+  }
+```
+
   </pre>
 </details>

@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "[logback] banner.txt 설정과 logback application.yml 설정"
+title: "[LOGGING] banner.txt 설정과 logback application.yml 설정"
 excerpt: "banner.txt 설정과 logback application.yml 설정"
 
 categories:
