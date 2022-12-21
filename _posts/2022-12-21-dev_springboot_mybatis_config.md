@@ -331,9 +331,7 @@ public class DBConfiguration {
 - mybatis-config.xml
   
 ```xml
-  <?xml version="1.0" encoding="UTF-8"?>
-
-  <configuration>
+   <configuration>
       <settings>
           <setting name="cacheEnabled" value="true" />
           <setting name="lazyLoadingEnabled" value="true" />
