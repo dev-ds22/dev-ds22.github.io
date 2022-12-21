@@ -25,6 +25,7 @@ last_modified_at: 2022-12-19
 - Docker설치가 완료되었다면 windows terminal에서 다음 명령어를 순서대로 입력. 
 
 - 1. 도커 이미지 pull
+
 ```powershell
   $ docker pull redis
 ```
@@ -116,8 +117,6 @@ last_modified_at: 2022-12-19
 ```powershell
   $ docker exec -it myredis /bin/bash
 ```
-
-# 컨테이너 로그
 
 
 <details>
