@@ -22,7 +22,7 @@ last_modified_at: 2022-12-21
 
 ## 2. DB의 url, username, password를 암호화하기
 
-### 2-1. Mybatis Interceptor 배경
+### 2-1. jasypt 의존성설정
 
 - gradle
 
