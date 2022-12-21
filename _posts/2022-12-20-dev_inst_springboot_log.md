@@ -17,13 +17,14 @@ last_modified_at: 2022-12-20
 # banner.txt 설정과 logback application.yml 설정
 
 ## Spring Boot Banner.txt (프로젝트 타이틀 콘솔 출력)
+
 - src/main/resources 경로에 banner.txt 파일을 생성해주고 내용을 입력.
 - 배너생성 1 : https://devops.datenkollektiv.de/banner.txt
 - 배너생성 2 : http://patorjk.com/software/taag
 
 - banner.txt 생성
 
-```txt                                                                                
+```bash                                                                                
   ,--.  ,--.         ,--. ,--.           ,--.   ,--.                 ,--.    ,--. 
   |  '--'  |  ,---.  |  | |  |  ,---.    |  |   |  |  ,---.  ,--.--. |  |  ,-|  | 
   |  .--.  | | .-. : |  | |  | | .-. |   |  |.'.|  | | .-. | |  .--' |  | ' .-. | 
@@ -37,7 +38,7 @@ last_modified_at: 2022-12-20
 - 글자색, 배경색도 지정가능.
 - 그외 애플리케이션, 부트 관련 속성도 사용가능.
 
-```
+```bash
   ${application.formatted-version} : (v1.0.0)
   ${application.title} : My application
   ${application.version} : 1.0.0
@@ -46,6 +47,7 @@ last_modified_at: 2022-12-20
 ```
 
 ## 참고 
+
 - 이미지도 사용가능한 듯...
 - application.yml 
 
@@ -110,6 +112,7 @@ spring:
       </root>
   </configuration>
 ```
+
 ## application.yml
 
 ```yaml

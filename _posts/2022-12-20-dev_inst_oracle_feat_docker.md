@@ -29,8 +29,9 @@ last_modified_at: 2022-12-20
 ```powershell
 $  docker search oracle-xe 
 ```
+  
 
-```log
+```bash
 PS C:\daiso\kafka\kafka_2.13-3.3.1> docker search oracle-xe
 NAME                              DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
   oracleinanutshell/oracle-xe-11g                                                   247
@@ -49,8 +50,9 @@ NAME                              DESCRIPTION                                   
 ```
   $ docker pull wnameless/oracle-xe-11g-r2
 ```
+  
 
-```log
+```bash
   PS C:\daiso\kafka\kafka_2.13-3.3.1> docker pull wnameless/oracle-xe-11g-r2
   Using default tag: latest
   latest: Pulling from wnameless/oracle-xe-11g-r2
@@ -72,8 +74,9 @@ NAME                              DESCRIPTION                                   
 ```powershell
   $ docker run --name oracle11g -d -p 8080:8080 -p 1521:1521 wnameless/oracle-xe-11g-r2 
 ```
+  
 
-```log
+```bash
   PS C:\daiso\kafka\kafka_2.13-3.3.1> docker run --name oracle11g -d -p 8080:8080 -p 1521:1521 wnameless/oracle-xe-11g-r2
   9fcfdc9f8d804a2f1720864bba8eea8f0c92e18a3ba11ce35947f17b9add5729
 ```
@@ -83,8 +86,9 @@ NAME                              DESCRIPTION                                   
 ```powershell
   docker ps
 ```
+  
 
-```log
+```bash
   PS C:\daiso\kafka\kafka_2.13-3.3.1> docker ps
   CONTAINER ID   IMAGE                                        COMMAND                  CREATED          STATUS          PORTS                                                    NAMES
   9fcfdc9f8d80   wnameless/oracle-xe-11g-r2                   "/bin/sh -c '/usr/sb…"   43 seconds ago   Up 41 seconds   0.0.0.0:1521->1521/tcp, 22/tcp, 0.0.0.0:8080->8080/tcp   oracle11g
@@ -100,8 +104,9 @@ NAME                              DESCRIPTION                                   
 ```powershell
   $ docker exec -u 0 -it oracle11g /bin/bash  
 ```
+  
 
-```log
+```bash
   PS C:\daiso\kafka\kafka_2.13-3.3.1> docker exec -u 0 -it oracle11g /bin/bash
   root@9fcfdc9f8d80:/# su oracle
   oracle@9fcfdc9f8d80:/$ sqlplus /nolog

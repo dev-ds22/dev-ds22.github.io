@@ -24,13 +24,14 @@ last_modified_at: 2022-12-19
 
 - Docker설치가 완료되었다면 windows terminal에서 다음 명령어를 순서대로 입력. 
 
-- 1. Docker MSSQL 설치 - pull
+### 1. Docker MSSQL 설치 - pull
 
 ```powershell
   > docker pull mcr.microsoft.com/mssql/server:2019-latest
 ```
+  
 
-```log
+```bash
   PS C:\Users\M2M-NB-131> docker pull mcr.microsoft.com/mssql/server:2019-latest
     2019-latest: Pulling from mssql/server
     210a236fbb96: Pull complete
@@ -42,11 +43,14 @@ last_modified_at: 2022-12-19
   PS C:\Users\M2M-NB-131>
 ```
 
-- 2. Docker MSSQL 설치 - run
+### 2. Docker MSSQL 설치 - run
 
-> docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=m2makstp' -p 1433:1433 --name local-dev-mssql-server -d mcr.microsoft.com/mssql/server:2019-latest
+```bash
+  docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=m2makstp' -p 1433:1433 --name local-dev-mssql-server -d mcr.microsoft.com/mssql/server:2019-latest
+```
+  
 
-```log
+```bash
   PS C:\Users\M2M-NB-131> docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=m2makstp!' -p 1433:1433 --name local-dev-mssql-server -d mcr.microsoft.com/mssql/server:2019-latest
   78b8b1912f0b1fc0acfdffe149c24f274418b7a12235dce680da80dea16ede4a
 
@@ -56,26 +60,26 @@ last_modified_at: 2022-12-19
   PS C:\Users\M2M-NB-131>
 ```
 
-- 3. SA 암호 변경
+### 3. SA 암호 변경
 
 ```powershell
   > docker exec -it local-dev-mssql-server /opt/mssql-tools/bin/sqlcmd -S > localhost -U SA -P 'm2makstp!' -Q 'ALTER LOGIN SA WITH PASSWORD="m2makstp!@"'
 ```
 
-- 4. Container 진입
+### 4. Container 진입
 ```powershell
   > docker exec -it local-dev-mssql-server "bash"
 ```
 
-- 5. MSSQL 접속
+### 5. MSSQL 접속
 
 ```powershell
   > /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'm2makstp!'
 ```
 
-### 여기서부터는 MSSQL에 들어갔을때 DATABASE 생성 및 사용자 계정 생성, 권한 부여 등에 대한 내용이다. 
+## MSSQL에 들어갔을때 DATABASE 생성 및 사용자 계정 생성, 권한 부여 등에 대한 내용. 
 
-- 6. DB 생성
+### 6. DB 생성
 
 ```powershell
   1> CREATE DATABASE localTestDB
@@ -86,7 +90,7 @@ last_modified_at: 2022-12-19
 ```  
 
 
-- 7. 사용자 계정 생성
+### 7. 사용자 계정 생성
 
 ```powershell
   1> CREATE LOGIN local_test WITH PASSWORD='m2makstp'
@@ -96,13 +100,14 @@ last_modified_at: 2022-12-19
   2> GO  
 ```
 
-- 8. 계정 권한 할당
+### 8. 계정 권한 할당
 
 ```powershell
   1> exec sp_addrolemember 'db_owner', local_test;
 ```
+  
 
-```log
+```bash
   mssql@16a0be4882c1:/$ /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'm2makstp!'
   1> CREATE DATABASE localTestDB
   2> GO

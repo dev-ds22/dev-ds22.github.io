@@ -28,8 +28,9 @@ last_modified_at: 2022-12-19
 ```powershell
   $ docker pull redis
 ```
+  
 
-```log
+```bash
   PS C:\Users\M2M-NB-131> docker pull redis
   Using default tag: latest
   latest: Pulling from library/redis
@@ -51,8 +52,9 @@ last_modified_at: 2022-12-19
   $ mkdir -p /etc/redis
   $ wget http://download.redis.io/redis-stable/redis.conf -O /etc/redis/redis.conf
 ```
+  
 
-```log
+```bash
   PS C:\Users\M2M-NB-131> mkdir -p /etc/redis
       디렉터리: C:\etc
   Mode                 LastWriteTime         Length Name
@@ -67,8 +69,9 @@ last_modified_at: 2022-12-19
 ```powershell
   $ docker network create redis-net
 ```
+  
 
-```log
+```bash
   PS C:\Users\M2M-NB-131> docker network create redis-net
   70cce1404f850812dd47f2dc35b41b9fb28835a2f9da9086df5e476a9f6e1070
 ```
@@ -78,8 +81,9 @@ last_modified_at: 2022-12-19
 ```powershell
   $ docker run --name myredis -p 6379:6379 --network redis-net -d -v /etc/redis/redis.conf:/usr/local/etc/redis/redis.conf redis redis-server --appendonly yes
 ```
+  
 
-```log
+```bash
   PS C:\Users\M2M-NB-131> docker run --name myredis -p 6379:6379 --network redis-net -d -v /etc/redis/redis.conf:/usr/local/etc/redis/redis.conf redis redis-server --appendonly yes
   5c0225a3f88d1bbb335a88d6c971249183146fc22a0b0837597d53ad6d52c24b
   PS C:\Users\M2M-NB-131>
@@ -90,8 +94,9 @@ last_modified_at: 2022-12-19
 ```powershell
   $ docker run -it --network redis-net --rm redis redis-cli -h myredis
 ```
+  
 
-```log
+```bash
   PS C:\Users\M2M-NB-131> docker run -it --network redis-net --rm redis redis-cli -h myredis
   myredis:6379> keys *
   (empty array)
@@ -106,8 +111,8 @@ last_modified_at: 2022-12-19
   myredis:6379>
 ```
 
-
 # 컨테이너 접속
+
 ```powershell
   $ docker exec -it myredis /bin/bash
 ```
