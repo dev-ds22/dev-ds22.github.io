@@ -330,9 +330,12 @@ public class DBConfiguration {
 
 - mybatis-config.xml
   
-```xml
-   <configuration>
-      <settings>
+```bash
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "HTTP://mybatis.org/dtd/mybatis-3-config.dtd">
+
+  <configuration >
+      <settings >
           <setting name="cacheEnabled" value="true" />
           <setting name="lazyLoadingEnabled" value="true" />
           <setting name="aggressiveLazyLoading" value="true" />
@@ -343,13 +346,13 @@ public class DBConfiguration {
           <setting name="jdbcTypeForNull" value="NULL" />
           <setting name="useGeneratedKeys" value="true" />
           <setting name="mapUnderscoreToCamelCase" value="true"/>
-      </settings>
+      </settings >
 
-      <plugins>
-          <plugin interceptor="kr.co.daiso.common.interceptor.MybatisInterceptor" />
-          <plugin interceptor="kr.co.daiso.common.interceptor.MaskingInterceptor" />
-      </plugins>
-  </configuration>
+      <plugins >
+          <plugin interceptor="kr.co.common.interceptor.MybatisInterceptor" />
+          <plugin interceptor="kr.co.common.interceptor.MaskingInterceptor" />
+      </plugins >
+  </configuration >
 ```
 
   </pre>
