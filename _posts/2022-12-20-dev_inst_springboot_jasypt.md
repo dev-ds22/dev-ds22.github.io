@@ -130,14 +130,13 @@ class JasyptApplicationTests {
 
   # Jasypt
   jasypt:
-  encryptor:
+    encryptor:
       bean: jasyptStringEncryptor
       algorithm: PBEWithMD5AndDES
       pool-size: 2
       string-output-type: base64
       key-obtention-iterations: 100000
-      password: password
-        
+      password: password    
   ... 생략
 ```
   
