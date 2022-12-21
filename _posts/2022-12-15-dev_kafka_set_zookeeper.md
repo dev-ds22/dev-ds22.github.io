@@ -275,11 +275,11 @@ last_modified_at: 2022-12-15
 ```bash
   send test~~~~~
 ```
-
-- 스프링 구현관련해서 이하 사이트내용 정리필요
-  - https://sup2is.github.io/2020/06/03/spring-boot-with-kafka-cluster.html
-  - https://semtax.tistory.com/83
   
+- 스프링 구현관련해서 이하 사이트내용 정리필요  
+  - https://sup2is.github.io/2020/06/03/spring-boot-with-kafka-cluster.html  
+  - https://semtax.tistory.com/83
+
 
 <details>
   <summary>Exp.</summary>  
