@@ -14,7 +14,7 @@ toc_sticky: true
 date: 2022-12-21
 last_modified_at: 2022-12-21
 ---
-# [Spring Boot] apoplication.yaml 에서 ENC사용 (feat.Jasypt)
+# application.yaml 에서 ENC사용
 
 ## 1. 개요
 
