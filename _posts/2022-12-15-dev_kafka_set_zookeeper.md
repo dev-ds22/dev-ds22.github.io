@@ -15,6 +15,7 @@ date: 2022-12-15
 last_modified_at: 2022-12-15
 ---
 # Zookeeper
+
 - 분산 코디네이션 서비스를 제공하는 오픈소스 프로젝트로 직접 어플리케이션 작업을 조율하는 것을 쉽게 개발할 수 있도록 도와주는 도구. 
   - 분산 코디네이션 서비스 : 분산 시스템에서 시스템 간의 정보 공유, 상태 체크, 서버들 간의 동기화를 위한 락 등을 처리해주는 서비스
 - API를 이용해 동기화나 마스터 선출 등의 작업을 쉽게 구현가능.
@@ -31,6 +32,7 @@ last_modified_at: 2022-12-15
 - tar -xzf kafka_2.13-2.6.0.tgz
 
 ## Zookeeper 설정
+
 ### zookeeper.properties
 
 ```powershell
@@ -62,7 +64,7 @@ last_modified_at: 2022-12-15
   # 리더 서버를 제외한 노드 서버가 리더와 동기화하는 시간, [멀티서버옵션]
   #syncLimit=2
 ```
-
+  
 ## Zookeeper 실행하기
 
 ```powershell
@@ -81,7 +83,7 @@ last_modified_at: 2022-12-15
 - zookeeper를 실행하면 위에서 설정한 dataDir 경로에 log, snapshot 데이터가 저장되는 것을 확인할 수 있다.
 - zookeeper는 필요한 설정이 있을 경우 공식문서를 참고해 properties를 추가하는 방식으로 사용
 
-```log
+```bash
   [2022-12-15 15:50:44,948] INFO binding to port 0.0.0.0/0.0.0.0:2181 (org.apache.zookeeper.server.NIOServerCnxnFactory)
   [2022-12-15 15:50:44,969] INFO Using org.apache.zookeeper.server.watch.WatchManager as watch manager (org.apache.zookeeper.server.watch.WatchManagerFactory)
   [2022-12-15 15:50:44,970] INFO Using org.apache.zookeeper.server.watch.WatchManager as watch manager (org.apache.zookeeper.server.watch.WatchManagerFactory)
@@ -103,6 +105,7 @@ last_modified_at: 2022-12-15
 ## Kafka 설정
 
 ### server.properties
+
 - Kafka 관련 설정 파일
 - 자세한 내용은 공식문서를 확인
 
@@ -189,6 +192,7 @@ last_modified_at: 2022-12-15
 ```  
 
 ## Kafka 실행
+
 - 새로운 터미널을 열어서 Kafka 실행.
 - kafka 압축을 푼 base 폴더로 이동한 후 다음 명령어 입력.
 
@@ -200,21 +204,24 @@ last_modified_at: 2022-12-15
 - kafka-server-start.bat
   - 윈도우 OS에서 kafka 서버 실행 파일
 
-```log
+```bash
   [2022-12-15 15:15:18,930] INFO [KafkaServer id=0] started (kafka.server.KafkaServer)
   [2022-12-15 15:15:18,993] INFO [BrokerToControllerChannelManager broker=0 name=forwarding]: Recorded new controller, from now on will use broker localhost:9092 (id: 0 rack: null) (kafka.server.BrokerToControllerRequestThread)
   [2022-12-15 15:15:19,009] INFO [BrokerToControllerChannelManager broker=0 name=alterPartition]: Recorded new controller, from now on will use broker localhost:9092 (id: 0 rack: null) (kafka.server.BrokerToControllerRequestThread)
 ```  
 
 ## 실행 확인
+
 ### 1. Topic 생성하기
+
 - localhost:9092 카프카 서버에 quickstart-events란 토픽을 생성.
 
 ```powershell
   $ bin/windows/kafka-topics.bat --create --topic quickstart-events --bootstrap-server localhost:9092
 ```
+  
 
-```log
+```bash
   Created topic quickstart-events.
 ```
 
@@ -223,8 +230,9 @@ last_modified_at: 2022-12-15
 ```powershell
   $ bin/windows/kafka-topics.bat --list --bootstrap-server localhost:9092
 ```
+  
 
-```log
+```bash
   quickstart-events
 ```
 
@@ -233,13 +241,15 @@ last_modified_at: 2022-12-15
 ```powershell
   $ bin/windows/kafka-topics.bat --describe --topic quickstart-events --bootstrap-server localhost:9092
 ```
+  
 
-```log
+```bash
   Topic: quickstart-events        TopicId: lljYqgc-RSiuhsbi9-YttA PartitionCount: 1       ReplicationFactor: 1    Configs: segment.bytes=1073741824
           Topic: quickstart-events        Partition: 0    Leader: 0       Replicas: 0     Isr: 0
 ```
 
 ### 2. Producer, Consumer 실행하기
+
 - 콘솔에서 Producer와 Consumer를 실행하여 실시간으로 토픽에 event를 추가하고 받을 수 있다.
 - 터미널을 분할로 띄워서 진행.
 
@@ -248,8 +258,9 @@ last_modified_at: 2022-12-15
 ```powershell
   bin/windows/kafka-console-producer.bat --topic quickstart-events --bootstrap-server localhost:9092
 ```
+  
 
-```log
+```bash
   >send test~~~~~
   >
 ```
@@ -259,17 +270,16 @@ last_modified_at: 2022-12-15
 ```powershell
   bin/windows/kafka-console-consumer.bat --topic quickstart-events --from-beginning --bootstrap-server localhost:9092
 ```
+  
 
-```log
+```bash
   send test~~~~~
 ```
 
-스프링 구현관련해서 이하 사이트 정리필요
-https://sup2is.github.io/2020/06/03/spring-boot-with-kafka-cluster.html
-
-https://semtax.tistory.com/83
-
-
+- 스프링 구현관련해서 이하 사이트내용 정리필요
+  - https://sup2is.github.io/2020/06/03/spring-boot-with-kafka-cluster.html
+  - https://semtax.tistory.com/83
+  
 
 <details>
   <summary>Exp.</summary>  
