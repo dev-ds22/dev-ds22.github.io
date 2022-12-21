@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "[MSSQL] Docker 환경에서 Redis 설치 및 기본설정"
+title: "[REDIS] Docker 환경에서 Redis 설치 및 기본설정"
 excerpt: "Docker 환경에서 Redis 설치 및 기본설정"
 
 categories:
@@ -117,7 +117,6 @@ last_modified_at: 2022-12-19
 ```powershell
   $ docker exec -it myredis /bin/bash
 ```
-
 
 <details>
   <summary>Exp.</summary>  
