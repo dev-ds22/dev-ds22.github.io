@@ -157,45 +157,45 @@ last_modified_at: 2022-12-21
 - logback-spring.xml
 
 ```bash
-<?xml version="1.0" encoding="UTF-8"?>  
-<configuration>
-  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder>
-      <pattern>[%d{yy/MM/dd HH:mm:ss}] [%-4level] %logger.%method:%line - %msg%n </pattern>
-    </encoder>
-  </appender>
+<?xml version="1.0" encoding="UTF-8"?  
+<configuration
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender"
+    <encoder
+      <pattern>[%d{yy/MM/dd HH:mm:ss}] [%-4level] %logger.%method:%line - %msg%n </pattern
+    </encoder
+  </appender
 
-  <property name="LOG_PATH" value="log-bo/logs"/>
+  <property name="LOG_PATH" value="log-bo/logs"/
 
-  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>${LOG_PATH}/logback.log</file>
-    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-      <Pattern>[%d{yy/MM/dd HH:mm:ss}] [%-4level] %logger.%method:%line - %msg%n</Pattern>
-    </encoder>
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender"
+    <file>${LOG_PATH}/logback.log</file
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder"
+      <Pattern>[%d{yy/MM/dd HH:mm:ss}] [%-4level] %logger.%method:%line - %msg%n</Pattern
+    </encoder
 
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd-HH}.log</fileNamePattern>
-<!--  <fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd-HH}.%i.log</fileNamePattern>-->
-<!--  <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">-->
-<!--    <maxFileSize>10MB</maxFileSize>-->
-<!--  </timeBasedFileNamingAndTriggeringPolicy>-->
-    </rollingPolicy>
-  </appender>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"
+      <fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd-HH}.log</fileNamePattern
+<!--  <fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd-HH}.%i.log</fileNamePattern-->
+<!--  <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP" -->
+<!--    <maxFileSize>10MB</maxFileSize-->
+<!--  </timeBasedFileNamingAndTriggeringPolicy-->
+    </rollingPolicy
+  </appender
 
-  <logger name="jdbc" level="OFF"/>
-  <logger name="jdbc.sqlonly" level="OFF"/>
-  <logger name="jdbc.sqltiming" level="DEBUG"/>
-  <logger name="jdbc.audit" level="OFF"/>
-  <logger name="jdbc.resultset" level="OFF"/>
-  <logger name="jdbc.resultsettable" level="OFF"/>
-  <logger name="jdbc.connection" level="OFF"/>
-  <logger name="com.ulisesbocchio.jasyptspringboot" level="WARN"/>
+  <logger name="jdbc" level="OFF"/
+  <logger name="jdbc.sqlonly" level="OFF"/
+  <logger name="jdbc.sqltiming" level="DEBUG"/
+  <logger name="jdbc.audit" level="OFF"/
+  <logger name="jdbc.resultset" level="OFF"/
+  <logger name="jdbc.resultsettable" level="OFF"/
+  <logger name="jdbc.connection" level="OFF"/
+  <logger name="com.ulisesbocchio.jasyptspringboot" level="WARN"/
 
-  <root level="INFO">
-    <appender-ref ref="CONSOLE" />
-    <appender-ref ref="FILE" />
-  </root>
-</configuration>
+  <root level="INFO"
+    <appender-ref ref="CONSOLE" /
+    <appender-ref ref="FILE" /
+  </root
+</configuration
 ```
 
 - application.yml 로 대체

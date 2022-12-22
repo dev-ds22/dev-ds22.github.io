@@ -331,28 +331,28 @@ public class DBConfiguration {
 - mybatis-config.xml
   
 ```bash
-  <?xml version="1.0" encoding="UTF-8"?>
-  <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "HTTP://mybatis.org/dtd/mybatis-3-config.dtd">
+  <?xml version="1.0" encoding="UTF-8"?
+  <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "HTTP://mybatis.org/dtd/mybatis-3-config.dtd"
 
-  <configuration >
-      <settings >
-          <setting name="cacheEnabled" value="true" />
-          <setting name="lazyLoadingEnabled" value="true" />
-          <setting name="aggressiveLazyLoading" value="true" />
-          <setting name="defaultExecutorType" value="REUSE" />
-          <setting name="defaultStatementTimeout" value="300" />
-          <setting name="localCacheScope" value="SESSION" />
-          <setting name="callSettersOnNulls" value="true" />
-          <setting name="jdbcTypeForNull" value="NULL" />
-          <setting name="useGeneratedKeys" value="true" />
-          <setting name="mapUnderscoreToCamelCase" value="true"/>
-      </settings >
+  <configuration 
+      <settings 
+          <setting name="cacheEnabled" value="true" /
+          <setting name="lazyLoadingEnabled" value="true" /
+          <setting name="aggressiveLazyLoading" value="true" /
+          <setting name="defaultExecutorType" value="REUSE" /
+          <setting name="defaultStatementTimeout" value="300" /
+          <setting name="localCacheScope" value="SESSION" /
+          <setting name="callSettersOnNulls" value="true" /
+          <setting name="jdbcTypeForNull" value="NULL" /
+          <setting name="useGeneratedKeys" value="true" /
+          <setting name="mapUnderscoreToCamelCase" value="true"/
+      </settings 
 
-      <plugins >
-          <plugin interceptor="kr.co.common.interceptor.MybatisInterceptor" />
-          <plugin interceptor="kr.co.common.interceptor.MaskingInterceptor" />
-      </plugins >
-  </configuration >
+      <plugins
+          <plugin interceptor="kr.co.common.interceptor.MybatisInterceptor" /
+          <plugin interceptor="kr.co.common.interceptor.MaskingInterceptor" /
+      </plugins
+  </configuration
 ```
 
   </pre>
