@@ -175,10 +175,10 @@ last_modified_at: 2022-12-21
 
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"
       <fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd-HH}.log</fileNamePattern
-<!--  <fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd-HH}.%i.log</fileNamePattern-->
-<!--  <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP" -->
-<!--    <maxFileSize>10MB</maxFileSize-->
-<!--  </timeBasedFileNamingAndTriggeringPolicy-->
+      <fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd-HH}.%i.log</fileNamePattern
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP"
+        <maxFileSize>10MB</maxFileSize
+      </timeBasedFileNamingAndTriggeringPolicy
     </rollingPolicy
   </appender
 
@@ -190,7 +190,7 @@ last_modified_at: 2022-12-21
   <logger name="jdbc.resultsettable" level="OFF"/
   <logger name="jdbc.connection" level="OFF"/
   <logger name="com.ulisesbocchio.jasyptspringboot" level="WARN"/
-
+  
   <root level="INFO"
     <appender-ref ref="CONSOLE" /
     <appender-ref ref="FILE" /
