@@ -60,6 +60,10 @@ last_modified_at: 2022-12-23
 ## 6. Elastic APM
 - 요청에 대한 응답 시간, DB 쿼리, 외부 HTTP 요청 등의 정보를 실시간 모니터링.
 - APM agents, Elastic APM integration, Elasticsearch, Kibana 4개의 요소로 구성.
+  - APM agents : 애플리케이션 런타임에 발생하는 데이터 및 에러를 모아 APM Server(Elastic APM integration)로 데이터를 전달.
+  - APM integration : APM agent로부터 데이터를 받아 검증 및 처리 후 Elasticsearch documents 형식으로 데이터를 변환.
+  - Elasticsearch : 대용량 데이터를 신속하게 저장, 검색, 분석, APM 성능 메트릭을 저장하고 해당 집계를 저장.
+  - Kibana : 저장된 데이터를 검색하고 볼 수 있는 시각화 플랫폼.
 
 ## 고려사항
 - **Cloud환경에서는 APM의 이용하는 로깅정보의 중앙집중을 위해 ELK Stack이 필요할수 있음.**
