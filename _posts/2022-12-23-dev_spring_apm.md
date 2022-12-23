@@ -19,6 +19,7 @@ last_modified_at: 2022-12-23
 - 참조1 : https://velog.io/@dplo1514/Spring-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-APM-%EA%B5%AC%ED%98%84-1%ED%83%84
 - 참조2 : https://velog.io/@viewrain/Scouter-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81-%EC%8B%9C%EC%8A%A4%ED%85%9C
 - 참조3 : https://happy-jjang-a.tistory.com/25
+- 참조4 : https://velog.io/@qotndus43/Elastic-APM-%EA%B5%AC%EC%84%B1%ED%95%98%EA%B8%B0
  
 ## 1. SpringBoot Actuator
 - 실행 중인 Application의 내부를 로그를 통해 들여다보는 기능.
