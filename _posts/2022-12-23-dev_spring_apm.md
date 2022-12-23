@@ -56,6 +56,13 @@ last_modified_at: 2022-12-23
   - see the zipkin-scouter-storage documentation.
   - see the zipkin instrumentations.
 
+## 6. Elastic APM
+- 요청에 대한 응답 시간, DB 쿼리, 외부 HTTP 요청 등의 정보를 실시간 모니터링.
+- APM agents, Elastic APM integration, Elasticsearch, Kibana 4개의 요소로 구성.
+
+## 고려사항
+- **Cloud환경에서의 중앙 집중식 로깅을 위해 ELK Stack이 필요할수 있음.**
+- 
 
 <details>
   <summary>Exp.</summary>  
