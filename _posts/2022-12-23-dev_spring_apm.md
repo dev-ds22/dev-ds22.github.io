@@ -61,8 +61,8 @@ last_modified_at: 2022-12-23
 - APM agents, Elastic APM integration, Elasticsearch, Kibana 4개의 요소로 구성.
 
 ## 고려사항
-- **Cloud환경에서의 중앙 집중식 로깅을 위해 ELK Stack이 필요할수 있음.**
-- 
+- **Cloud환경에서는 APM의 이용하는 로깅정보의 중앙집중을 위해 ELK Stack이 필요할수 있음.**
+
 
 <details>
   <summary>Exp.</summary>  
