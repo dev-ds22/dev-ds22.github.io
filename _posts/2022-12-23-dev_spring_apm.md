@@ -27,7 +27,7 @@ last_modified_at: 2022-12-23
 - Application에 포함된 다양한 패키지의 로깅 레벨 logging level을 설정, 로그를 수집
 - 지정된 엔드포인트가 받은 요청 횟수와 애플리케이션의 활성화 (helath Check) 상태 확인
 - MicroMeter를 사용한 선택적 log수집이 가능, 원하는 api별 로그 확인 가능.
-- health, info, metrics 등의 다양한 로그가 제공.
+- health, info, metrics 등의 다양한 로그 제공.
 
 ## 2. Prometheus
 
@@ -72,7 +72,7 @@ last_modified_at: 2022-12-23
   - Kibana : 저장된 데이터를 검색하고 볼 수 있는 시각화 플랫폼.
 
 ## 고려사항
-- **Cloud환경상 APM이 이용하는 로깅정보의 중앙집중을 위해 ELK Stack구축 필요여부 확인필요.**
+- **Cloud환경상 APM이 이용하는 로깅정보의 중앙집중을 위해 ELK Stack 구축 필요여부 확인필요.**
 
 
 <details>
