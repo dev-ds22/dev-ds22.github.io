@@ -118,6 +118,26 @@ last_modified_at: 2022-12-19
   $ docker exec -it myredis /bin/bash
 ```
 
+## 추가
+
+### Redis 엔터프라이즈 Active-Active 이중화(Duplexing)
+
+#### 커뮤니티 버전
+
+- Active-Standby 구조로만 사용가능.
+- HA(High Availability)를 구성하려면 추가로 3대의 센티널(Sentinel)이 필요.
+- Active 마스터에 접속하기 위한 애플리케이션 개발이 어려움.
+- Active 서버가 바뀔 수 있기 때문에 항상 Active 서버 IP와 포트를 센티널에 문의 후 접속필요.
+
+#### 엔터프라이즈 버전
+
+- Active-Active 마스터간 데이터를 실시간으로 동기화.
+- VIP(Virtual IP) 하나로 레디스 서버에 접속.
+  - 애플리케이션 개발이 쉬워짐.
+  - Active 서버간에 부하 분산(Load Balancing)도 됩니다.
+- 서버 대수가 줄어들어 비용이 절감.
+- 센티널이 없으므로 운영단순.
+
 <details>
   <summary>Exp.</summary>  
   <pre>
