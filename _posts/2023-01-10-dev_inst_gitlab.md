@@ -1,7 +1,7 @@
 ---
 layout: single
-title: "[GIT] Git Submodule 가이드"
-excerpt: "Gradle 멀티 프로젝트, Git Sub Module"
+title: "[GITLAB] Gitlab 설치"
+excerpt: "GITLAB 서버설치 가이드"
 
 categories:
   - tech
