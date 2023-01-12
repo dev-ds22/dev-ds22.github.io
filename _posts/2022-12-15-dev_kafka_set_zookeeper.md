@@ -69,6 +69,7 @@ last_modified_at: 2022-12-15
 
 ```powershell
   $ cd C:\daiso\kafka\kafka_2.13-3.3.1
+  # bin/zookeeper-server-start.sh config/zookeeper.properties
   $ ./bin/windows/zookeeper-server-start.bat ./config/zookeeper.properties
 ```
 
@@ -204,6 +205,7 @@ last_modified_at: 2022-12-15
 - kafka-server-start.bat
   - 윈도우 OS에서 kafka 서버 실행 파일
 
+
 ```bash
   [2022-12-15 15:15:18,930] INFO [KafkaServer id=0] started (kafka.server.KafkaServer)
   [2022-12-15 15:15:18,993] INFO [BrokerToControllerChannelManager broker=0 name=forwarding]: Recorded new controller, from now on will use broker localhost:9092 (id: 0 rack: null) (kafka.server.BrokerToControllerRequestThread)
@@ -214,38 +216,67 @@ last_modified_at: 2022-12-15
 
 ### 1. Topic 생성하기
 
-- localhost:9092 카프카 서버에 quickstart-events란 토픽을 생성.
+> ## 하기전 해야하는 것  
+> # /kafka/config/server.properties 에 들어가서   
+> delete.topic.enable = true
+>   
+> ## topic 만들기  
+> bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic dev-topic
+>  
+> ## 만들어졌는지 확인  
+> bin/kafka-topics.sh --list --bootstrap-server localhost:9092  
+>    
+> ## 안에 머라고 궁시렁 궁시렁  
+> bin/kafka-console-producer.sh --broker-list localhost:9092 --topic dev-topic  
+>  
+> ## 안에 머라 적었는지 확인  
+> bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic dev-topic --from-beginning  
+>  
+> ## topic 제거하기  
+> bin/kafka-topics.sh --delete --bootstrap-server localhost:9092  --topic dev-topic  
+>   
+> ## 없어졌는지 확인    
+> bin/kafka-topics.sh --list --bootstrap-server localhost:9092
+>    
 
-```powershell
-  $ bin/windows/kafka-topics.bat --create --topic quickstart-events --bootstrap-server localhost:9092
+- localhost:9092 카프카 서버에 dev-topic란 토픽을 생성.
+
+```bash
+  # $ bin/windows/kafka-topics.bat --create --topic dev-topic --bootstrap-server localhost:9092
+  # bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic dev-topic
+  $ bin/windows/kafka-topics.bat --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic dev-topic
 ```
   
 
 ```bash
-  Created topic quickstart-events.
+  Created topic dev-topic.
 ```
 
 - 현재 만들어져 있는 토픽 확인
 
 ```powershell
+  # bin/kafka-topics.sh --list --bootstrap-server localhost:9092
   $ bin/windows/kafka-topics.bat --list --bootstrap-server localhost:9092
 ```
   
 
 ```bash
-  quickstart-events
+  dev-topic
 ```
 
 - 특정 토픽의 설정 확인
 
 ```powershell
-  $ bin/windows/kafka-topics.bat --describe --topic quickstart-events --bootstrap-server localhost:9092
+  # bin/kafka-topics.sh --describe --topic dev-topic --bootstrap-server localhost:9092
+  $ bin/windows/kafka-topics.bat --describe --topic dev-topic --bootstrap-server localhost:9092
 ```
   
 
 ```bash
-  Topic: quickstart-events        TopicId: lljYqgc-RSiuhsbi9-YttA PartitionCount: 1       ReplicationFactor: 1    Configs: segment.bytes=1073741824
-          Topic: quickstart-events        Partition: 0    Leader: 0       Replicas: 0     Isr: 0
+PS C:\daiso\kafka\kafka_2.13-3.3.1> bin/windows/kafka-topics.bat --describe --topic dev-topic --bootstrap-server localhost:9092
+Topic: dev-topic        TopicId: qPKE8o4jTIip9406OJMVKA PartitionCount: 1       ReplicationFactor: 1    Configs: segment.bytes=1073741824
+        Topic: dev-topic        Partition: 0    Leader: 0       Replicas: 0     Isr: 0
+PS C:\daiso\kafka\kafka_2.13-3.3.1>
 ```
 
 ### 2. Producer, Consumer 실행하기
@@ -254,38 +285,562 @@ last_modified_at: 2022-12-15
 - 터미널을 분할로 띄워서 진행.
 
 #### Producer
-
-```powershell
-  bin/windows/kafka-console-producer.bat --topic quickstart-events --bootstrap-server localhost:9092
-```
-  
+- Producers: Topic에 메시지 보내기
+- "생산자(Producer)"는 데이터를 Kafka 클러스터에 넣는 프로세스.
+- bin 디렉토리의 명령어는 콘솔에 텍스트를 입력할 때마다 클러스터에 데이터를 입력하는 콘솔 생성자(Producer)를 제공.
+- 콘솔 생산자(Producer)를 시작하려면 다음 명령을 실행.
 
 ```bash
-  >send test~~~~~
+  # bin/kafka-console-producer.sh --topic dev-topic --bootstrap-server localhost:9092
+  bin/windows/kafka-console-producer.bat --topic dev-topic --bootstrap-server localhost:9092
+  # bin/windows/kafka-console-producer.bat --broker-list localhost:9093,localhost:9094,localhost:9095 --topic dev-topic
+```
+
+```bash
+  > dev-topic test~~~~~~~~~~~~~~~~~
   >
 ```
 
-#### Consumer
+- Broker-list는 생산자가 방금 프로비저닝한 브로커의 주소.
+- topic은 데이터가 입력하려는 주제(topic)를 지정.
+- 데이터를 입력하고 Enter 키를 치면, Kafka 클러스터에 텍스트를 입력할 수 있는 명령 프롬프트가 표시.
 
-```powershell
-  bin/windows/kafka-console-consumer.bat --topic quickstart-events --from-beginning --bootstrap-server localhost:9092
+- 컨슈머가 데이터를 가져가도 Topic 데이터는 삭제되지 않음.
+
+> first insert  
+> 두번째 입력  
+
+- 프로듀서가 데이터를 보낼 때 '파티션키'를 지정해서 전송가능.
+- 파티션키를 지정하지 않으면, 라운드로빈 방식으로 파티션에 저장.
+- 파티션키를 지정하면, 파티셔너가 파티션키의 HASH 값을 구해서 특정 파티션에 할당.
+- 카프카에서 kafka-console-producer.sh로 Consumer에게 메세지를 보낼 때 기본적으로 key값이 null로 설정.
+
+#### Consumer
+- Kafka consumers 를 사용하여 클러스터에서 데이터를 취득
+- consumer를  시작하려면 다음 명령을 실행합니다. 
+  - pruducer가 입력한 데이터가 출력.
+
+```bash
+  $ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic dev-topic --from-beginning
 ```
-  
+
+- bootstrap-server는 클러스터의 브로커 중 하나.
+- Topic은 생산자가 클러스터에 데이터를 입력한 Topic(주제).
+- 0 from-beginning은 클러스터에 현재 가지고 있는 모든 메시지를 원한다고 클러스터에 알림.
+  - 컨슈머 그룹이 다른 새로운 컨슈머가 auto.offset.reset=earliest 설정으로 데이터를 0번부터 취득. 
+    - 설정하지 않으면 새롭게 토픽에 생성된 메세지만 취득.
+- 위의 명령을 실행하면 콘솔에 로그온한 생산자가 입력한 모든 메시지가 즉시 표시.
+- 소비자가 실행되는 동안 생산자가 메시지를 입력하면 실시간으로 콘솔에 출력.
+
+- 카프카에서는 consumer 그룹이라는 개념존재 --consumer-property group.id=group-01 형식으로 consumer 그룹지정가능 
+- 카프카 브로커는 컨슈머 그룹 중 하나의 컨슈머에게만 이벤트를 전달
+- 동일한 이벤트 처리를 하는 컨슈머를 clustering 한 경우에 컨슈머 그룹으로 지정하면 클러스터링된 컨슈머 중 하나의 서버가 데이터를 수신.
+
+- key와 value를 콘솔창에 표시하기 위해서는 --property print.key=true --property key.separator=: 를 설정.
+
+```bash
+  bin/kafka-console-consumer.sh --bootstrap-server localhost:9093 --topic my-kafka-topic --from-beginning \
+    --property print.key=true --property key.separator=:
+
+  "key":"second key value"
+  "secone message":null
+  key3:third
+```
+
+#### Consumer Group
+기존의 Message Queue 솔루션에서는 컨슈머가 메시지를 가져가면, 해당 메세지를 큐에서 삭제된다. 즉, 하나의 큐에 대하여 여러 컨슈머가 붙어서 같은 메세지를 컨슈밍할 수 없다. 하지만 Kafka는, 컨슈머가 메세지를 가져가도 큐에서 즉시 삭제되지 않으며, 하나의 토픽에 여러 컨슈머 그룹이 붙어 메세지를 가져갈 수 있다.
+
+또한 각 consumer group마다 해당 topic의 partition에 대한 별도의 offset을 관리하고, group에 컨슈머가 추가/제거 될 때마다 rebalancing을 하여 group 내의 consumer에 partition을 할당하게 된다. 이는 컨슈머의 확장/축소를 용이하게 하고, 하나의 MQ(Message Queue)를 컨슈머 별로 다른 용도로 사용할 수 있는 확장성을 제공한다.
+
+아래 명령어로 컨슈머 그룹을 지정합니다.
+- $ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic [토픽 이름] --group [그룹 이름]
+
+```bash
+  $ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic dev-topic --group dev-group
+```
+그룹에 속하는 컨슈머가 여러개이면 로드밸런싱을 통해 자동으로 메세지를 분배
+2. 그룹 정보 확인
+
+```bash
+  $ bin/kafka-console-groups.sh --bootstrap-server localhost:9092 --describe --group dev-group
+```
+
+- 위에 대한 명령어로 아래의 정보들을 얻을 수 있다.
+  - CURRENT-OFFSET : Consumer Group이 Kafka에서 읽은 offset
+  - LOG-END-OFFSET : 해당 topic, partition의 마지막 offset
+  - LAG : LOG-END-OFFSET 과 CURRENT-OFFSET의 차이
+    - LAG의 경우 topic의 partition단위로 읽어야 할 남은 데이터 수를 의미한다
+ 
+```powershell
+  # bin/kafka-console-consumer.sh --topic dev-topic --from-beginning --bootstrap-server localhost:9092
+  bin/windows/kafka-console-consumer.bat --topic dev-topic --from-beginning --bootstrap-server localhost:9092
+```
 
 ```bash
   send test~~~~~
 ```
-  
+
 - 스프링 구현관련해서 이하 사이트내용 정리필요  
   - https://sup2is.github.io/2020/06/03/spring-boot-with-kafka-cluster.html  
   - https://semtax.tistory.com/83
 
+
+# CentOS에서 kafka 설치
+
+## 1. 카프카 다운로드
+
+```bash
+  wget https://dlcdn.apache.org/kafka/3.0.0/kafka_2.13-3.0.0.tgz
+  tar xzf kafka_2.13-3.0.0.tgz
+  mv kafka_2.13-3.0.0 /usr/local/kafka
+```
+
+## 2.카프카 Systemd Unit Files 세팅
+
+> # which java  
+> /usr/bin/java​  
+>  
+> # javac의 심볼릭 링크 원본 찾기  
+> readlink -f /usr/bin/javac  
+>  
+> # java의 심볼릭 링크 원본 찾기  
+> readlink -f /usr/bin/java  
+> 
+
+```bash
+vim /etc/systemd/system/zookeeper.service
+```
+
+```bash
+  [Unit]
+  Description=Apache Zookeeper server
+  Documentation=http://zookeeper.apache.org
+  Requires=network.target remote-fs.target
+  After=network.target remote-fs.target
+
+  [Service]
+  Type=simple
+  ExecStart=/usr/bin/bash /usr/local/kafka/bin/zookeeper-server-start.sh /usr/local/kafka/config/zookeeper.properties
+  ExecStop=/usr/bin/bash /usr/local/kafka/bin/zookeeper-server-stop.sh
+  Restart=on-abnormal
+
+  [Install]
+  WantedBy=multi-user.target
+  
+
+  vim /etc/systemd/system/kafka.service
+  
+
+  [Unit]
+  Description=Apache Kafka Server
+  Documentation=http://kafka.apache.org/documentation.html
+  Requires=zookeeper.service
+
+  [Service]
+  Type=simple
+  Environment="JAVA_HOME=/usr/lib/jvm/jre-11-openjdk"
+  ExecStart=/usr/bin/bash /usr/local/kafka/bin/kafka-server-start.sh /usr/local/kafka/config/server.properties
+  ExecStop=/usr/bin/bash /usr/local/kafka/bin/kafka-server-stop.sh
+
+  [Install]
+  WantedBy=multi-user.target
+```
+
+```bash
+  systemctl daemon-reload
+```
+
+## 3. Kafka 서버 시작
+
+```bash
+sudo systemctl start zookeeper
+sudo systemctl start kafka
+sudo systemctl status kafkanetst
+```
+
+## 4. 포트 오픈 (필수 아님)
+
+```bash
+firewall-cmd --permanent --zone=public --add-port=9092/tcp
+firewall-cmd --reload
+```
+
+## 5. 외부 접속 오픈 (필수 아님)
+
+```bash
+  vi /usr/local/kafka/config/server.properties
+  # Hostname and port the broker will advertise to producers and consumers. If not set,
+  # it uses the value for "listeners" if configured.  Otherwise, it will use the value
+  # returned from java.net.InetAddress.getCanonicalHostName().
+  advertised.listeners=PLAINTEXT://192.168.0.1:9092
+```
+
+## 6. 외부 접속 오픈 (필수 아님)
+
+```bash
+sudo systemctl restart kafka
+sudo systemctl status kafka
+```
+
+## 7. Setting up a multi-broker Cluster(클러스터 구성)
+
+```bash
+  $ cp ./config/server.properties ./config/server-1.properties 
+  $ cp ./config/server.properties ./config/server-2.properties
+```
+
+```bash
+  config/server-1.properties:
+      broker.id=1
+      listeners=PLAINTEXT://:9093
+      log.dirs=/tmp/kafka-logs-1
+
+  config/server-2.properties:
+      broker.id=2
+      listeners=PLAINTEXT://:9095
+      log.dirs=/tmp/kafka-logs-2
+```
+
+- Broker 서버를 띄울 properties 파일을 추가적으로 생성해주고 포트와 로그 경로를 변경해준다.
+- 이후에, 추가한 Broker 서버들을 기동해준다.
+
+```bash
+  $ bin/kafka-server-start.sh config/server-1.properties &
+  $ bin/kafka-server-start.sh config/server-2.properties &
+```
+
+- 기동시 로그에 아래와 같이 클러스터가 정상적으로 연결됐다는 메세지를 확인할 수 있다.
+- server-0
+
+```bash
+  $ INFO [Partition my-replicated-topic-0 broker=0] ISR updated to 0,1 and version updated to [6] (kafka.cluster.Partition)
+  $ INFO [Partition my-replicated-topic-0 broker=0] ISR updated to 0,1,2 and version updated to [7] (kafka.cluster.Partition)
+```
+
+- server-1
+
+```bash
+  $ INFO [BrokerToControllerChannelManager broker=1 name=alterIsr]: Recorded new controller, from now on will use broker sydev:9092 (id: 0 rack: null) (kafka.server.BrokerToControllerRequestThread)
+```
+
+- server-2
+
+```bash
+  $ INFO [BrokerToControllerChannelManager broker=2 name=forwarding]: Recorded new controller, from now on will use broker sydev:9092 (id: 0 rack: null) (kafka.server.BrokerToControllerRequestThread)
+```
+
+## 8. 클러스터 Fail-Over 테스트
+
+### 8-1. 먼저 Replica Factor를 3개 추가해서 클러스터용 신규 토픽을 생성한다.
+
+```bash
+  $ bin/kafka-topics.sh --create --bootstrap-server 10.222.10.170:9092 --replication-factor 3 --partitions 1 --topic dev-replicated-topic
+  
+  ...
+  Created topic my-replicated-topic.
+```
+
+- 생성된 토픽에 대한 자세한 Describe 설명 조회
+
+```log
+  $ bin/kafka-topics.sh --describe --bootstrap-server 10.222.10.170:9092 --topic dev-replicated-topic
+
+  Topic: my-replicated-topic TopicId: qf1AFc-STwiZ6uOBX13Amw PartitionCount: 1 ReplicationFactor: 3 Configs: segment.bytes=1073741824
+  Topic: my-replicated-topic Partition: 0 Leader: 1 Replicas: 0,2,1 Isr: 1,0,2
+```
+  - Leader : 지정된 파티션에 대한 모든 읽기/쓰기를 담당하는 노드이다. 현재 나의 예제에서는 Leader가 1번(*:9093)이다.
+
+### 8-2. Fail-Over 테스트
+
+#### 프로듀서 실행
+
+```log
+  $ bin/kafka-console-producer.sh --broker-list 10.222.10.170:9092 --topic dev-replicated-topic
+
+  > my test message 1
+  > my test message 2
+```
+
+#### 컨슈머 실행
+
+```log
+  $ bin/kafka-console-consumer.sh --bootstrap-server 10.222.10.170:9092 --from-beginning --topic dev-replicated-topic
+
+  my test message 1
+  my test message 2
+```
+
+- 현재 리더 역할을 하고 있는 server-1을 kill -9 로 Shutdown 시킨다.
+
+```log
+  [root@sydev kafka_2.12-3.0.0]# netstat -anp|grep 9093
+  tcp6       0      0 :::9093                 :::*                    LISTEN      28867/java      
+
+
+  [root@sydev kafka_2.12-3.0.0]# kill -9 28867
+```
+
+##### Leader인 브로커를 죽인 이후,,
+
+#### 프로듀서 
+
+```log
+  # $ bin/kafka-topics.sh --delete --bootstrap-server 10.222.10.170:9092  --topic dev-replicated-topic 
+  # $ bin/kafka-console-producer.sh --broker-list 10.222.10.170:9092 --topic dev-replicated-topic
+  $ bin/kafka-console-producer.sh --broker-list 10.222.10.170:9092,10.222.10.170:9093,localhost:9095 --topic dev-replicated-topic
+
+  > my test message 1
+  > my test message 2
+  >
+```
+
+```log
+  $ WARN [Producer clientId=console-producer] Connection to node 1 (sydev/192.168.56.106:9093) could not be established. Broker may not be available. (org.apache.kafka.clients.NetworkClient)
+  $ WARN [Producer clientId=console-producer] Connection to node 1 (sydev/192.168.56.106:9093) could not be established. Broker may not be available. (org.apache.kafka.clients.NetworkClient)
+  $ WARN [Producer clientId=console-producer] Connection to node 1 (sydev/192.168.56.106:9093) could not be established. Broker may not be available. (org.apache.kafka.clients.NetworkClient)
+  $ WARN [Producer clientId=console-producer] Connection to node 1 (sydev/192.168.56.106:9093) could not be established. Broker may not be available. (org.apache.kafka.clients.NetworkClient)
+  $ WARN [Producer clientId=console-producer] Connection to node 1 (sydev/192.168.56.106:9093) could not be established. Broker may not be available. (org.apache.kafka.clients.NetworkClient)
+
+  > after failover
+  > you ok?
+```
+
+#### 컨슈머
+
+```log
+  my test message 1
+  my test message 2
+
+  $ WARN [Consumer clientId=consumer-console-consumer-3714-1, groupId=console-consumer-3714] Connection to node 1 (sydev/192.168.56.106:9093) could not be established. Broker may not be available. (org.apache.kafka.clients.NetworkClient)
+  $ WARN [Consumer clientId=consumer-console-consumer-3714-1, groupId=console-consumer-3714] Connection to node 1 (sydev/192.168.56.106:9093) could not be established. Broker may not be available. (org.apache.kafka.clients.NetworkClient)
+  $ WARN [Consumer clientId=consumer-console-consumer-3714-1, groupId=console-consumer-3714] Connection to node 1 (sydev/192.168.56.106:9093) could not be established. Broker may not be available. (org.apache.kafka.clients.NetworkClient)
+  ...(생략)
+
+  after failover
+  you ok?
+```
+
+- 리더 브로커를 죽였지만, 이후에도 after failover, you ok? 메세지가 정상적으로 Producer를 통해 Consumer로 전달.
 
 <details>
   <summary>Exp.</summary>  
   <pre>
 
 ### 참조
+
+# server.properties
+```bash
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#
+# This configuration file is intended for use in ZK-based mode, where Apache ZooKeeper is required.
+# See kafka.server.KafkaConfig for additional details and defaults
+#
+
+############################# Server Basics #############################
+
+# The id of the broker. This must be set to a unique integer for each broker.
+broker.id=0
+
+############################# Socket Server Settings #############################
+
+# The address the socket server listens on. If not configured, the host name will be equal to the value of
+# java.net.InetAddress.getCanonicalHostName(), with PLAINTEXT listener name, and port 9092.
+#   FORMAT:
+#     listeners = listener_name://host_name:port
+#   EXAMPLE:
+#     listeners = PLAINTEXT://your.host.name:9092
+listeners=PLAINTEXT://10.222.10.170:9092
+
+# Listener name, hostname and port the broker will advertise to clients.
+# If not set, it uses the value for "listeners".
+advertised.listeners=PLAINTEXT://10.222.10.170:9092
+
+# Maps listener names to security protocols, the default is for them to be the same. See the config documentation for more details
+#listener.security.protocol.map=PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
+
+# The number of threads that the server uses for receiving requests from the network and sending responses to the network
+num.network.threads=3
+
+# The number of threads that the server uses for processing requests, which may include disk I/O
+num.io.threads=8
+
+# The send buffer (SO_SNDBUF) used by the socket server
+socket.send.buffer.bytes=102400
+
+# The receive buffer (SO_RCVBUF) used by the socket server
+socket.receive.buffer.bytes=102400
+
+# The maximum size of a request that the socket server will accept (protection against OOM)
+socket.request.max.bytes=104857600
+
+
+############################# Log Basics #############################
+
+# A comma separated list of directories under which to store log files
+log.dirs=/tmp/kafka-logs
+
+# The default number of log partitions per topic. More partitions allow greater
+# parallelism for consumption, but this will also result in more files across
+# the brokers.
+num.partitions=1
+
+# The number of threads per data directory to be used for log recovery at startup and flushing at shutdown.
+# This value is recommended to be increased for installations with data dirs located in RAID array.
+num.recovery.threads.per.data.dir=1
+
+############################# Internal Topic Settings  #############################
+# The replication factor for the group metadata internal topics "__consumer_offsets" and "__transaction_state"
+# For anything other than development testing, a value greater than 1 is recommended to ensure availability such as 3.
+offsets.topic.replication.factor=1
+transaction.state.log.replication.factor=1
+transaction.state.log.min.isr=1
+
+############################# Log Flush Policy #############################
+
+# Messages are immediately written to the filesystem but by default we only fsync() to sync
+# the OS cache lazily. The following configurations control the flush of data to disk.
+# There are a few important trade-offs here:
+#    1. Durability: Unflushed data may be lost if you are not using replication.
+#    2. Latency: Very large flush intervals may lead to latency spikes when the flush does occur as there will be a lot of data to flush.
+#    3. Throughput: The flush is generally the most expensive operation, and a small flush interval may lead to excessive seeks.
+# The settings below allow one to configure the flush policy to flush data after a period of time or
+# every N messages (or both). This can be done globally and overridden on a per-topic basis.
+
+# The number of messages to accept before forcing a flush of data to disk
+#log.flush.interval.messages=10000
+
+# The maximum amount of time a message can sit in a log before we force a flush
+#log.flush.interval.ms=1000
+
+############################# Log Retention Policy #############################
+
+# The following configurations control the disposal of log segments. The policy can
+# be set to delete segments after a period of time, or after a given size has accumulated.
+# A segment will be deleted whenever *either* of these criteria are met. Deletion always happens
+# from the end of the log.
+
+# The minimum age of a log file to be eligible for deletion due to age
+log.retention.hours=168
+
+# A size-based retention policy for logs. Segments are pruned from the log unless the remaining
+# segments drop below log.retention.bytes. Functions independently of log.retention.hours.
+#log.retention.bytes=1073741824
+
+# The maximum size of a log segment file. When this size is reached a new log segment will be created.
+log.segment.bytes=107374182
+
+# The interval at which log segments are checked to see if they can be deleted according
+# to the retention policies
+log.retention.check.interval.ms=300000
+
+############################# Zookeeper #############################
+
+# Zookeeper connection string (see zookeeper docs for details).
+# This is a comma separated host:port pairs, each corresponding to a zk
+# server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".
+# You can also append an optional chroot string to the urls to specify the
+# root directory for all kafka znodes.
+zookeeper.connect=localhost:2181
+
+# Timeout in ms for connecting to zookeeper
+zookeeper.connection.timeout.ms=18000
+
+
+############################# Group Coordinator Settings #############################
+
+# The following configuration specifies the time, in milliseconds, that the GroupCoordinator will delay the initial consumer rebalance.
+# The rebalance will be further delayed by the value of group.initial.rebalance.delay.ms as new members join the group, up to a maximum of max.poll.interval.ms.
+# The default value for this is 3 seconds.
+# We override this to 0 here as it makes for a better out-of-the-box experience for development and testing.
+# However, in production environments the default value of 3 seconds is more suitable as this will help to avoid unnecessary, and potentially expensive, rebalances during application startup.
+group.initial.rebalance.delay.ms=0
+
+delete.topic.enable = true
+```
+
+# application.yaml
+```yaml
+spring:
+  kafka:
+    bootstrap-servers:
+      - 10.222.10.170:9092
+    listener:
+      ack-mode: MANUAL_IMMEDIATE
+      type: SINGLE      
+    consumer:
+      # consumer bootstrap servers가 따로 존재하면 설정
+      # bootstrap-servers: 192.168.0.4:9092
+      # 식별 가능한 Consumer Group Id
+      group-id: dev-group
+      # Kafka 서버에 초기 offset이 없거나, 서버에 현재 offset이 더 이상 존재하지 않을 경우 수행할 작업을 설정
+      # latest: 가장 최근에 생산된 메시지로 offeset reset
+      # earliest: 가장 오래된 메시지로 offeset reset
+      # none: offset 정보가 없으면 Exception 발생
+      auto-offset-reset: earliest
+      # 데이터를 받아올 때, key/value를 역직렬화
+      # JSON 데이터를 받아올 것이라면 JsonDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      acks: all
+      # producer bootstrap servers가 따로 존재하면 설정
+      # bootstrap-servers: 3.34.97.97:9092
+
+      # 데이터를 보낼 때, key/value를 직렬화
+      # JSON 데이터를 보낼 것이라면 JsonDeserializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+```
+
+```bash
+  - zookeeper 실행확인
+  $ netstat -anp|grep 2181
+
+  - zookeeper 정지
+  $ ./bin/zookeeper-server-stop.sh
+
+  $ systemctl daemon-reload
+  $ systemctl enable zookeeper
+  $ systemctl start zookeeper  
+
+  - zookeeper 실행
+  $ ./bin/zookeeper-server-start.sh config/zookeeper.properties
+
+  - kafka #1 실행
+  $ ./bin/kafka-server-start.sh config/server.properties
+
+  - kafka #2 실행
+  $ ./bin/kafka-server-start.sh config/server-1.properties
+
+  - kafka #3 실행
+  $ ./bin/kafka-server-start.sh config/server-2.properties
+
+  - Producer 삭제
+  # $ bin/kafka-topics.sh --delete --bootstrap-server 10.222.10.170:9092  --topic dev-replicated-topic 
+
+  - Producer 실행  
+  $ bin/kafka-console-producer.sh --broker-list 10.222.10.170:9092,10.222.10.170:9096,localhost:9098 --topic dev-replicated-topic
+
+  - Consumer 실행
+  $ bin/kafka-console-consumer.sh --bootstrap-server 10.222.10.170:9092 --from-beginning --topic dev-replicated-topic
+  $ bin/kafka-console-consumer.sh --bootstrap-server 10.222.10.170:9096 --from-beginning --topic dev-replicated-topic
+  $ bin/kafka-console-consumer.sh --bootstrap-server 10.222.10.170:9098 --from-beginning --topic dev-replicated-topic
+  
+```
 
   </pre>
 </details>
