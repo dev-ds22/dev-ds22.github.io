@@ -15,6 +15,7 @@ date: 2022-12-29
 last_modified_at: 2022-12-29
 ---
 ## 1. Linux
+
     CentOS-7-x86_64-Minimal-2009.iso
 
 - x86_64 
@@ -50,6 +51,7 @@ last_modified_at: 2022-12-29
 
 
 ## 2. JDK
+
     java-11-amazon-corretto-devel-11.0.17.8-1.x86_64.rpm
 
 ## 3. Nexus
@@ -58,6 +60,7 @@ last_modified_at: 2022-12-29
 ## 6. Gitlab
 ## 7. NginX
 ## 8. Oracle
+
     V17530-01_1of2.zip
     V17530-01_2of2.zip
 

@@ -110,7 +110,7 @@ last_modified_at: 2023-01-10
   #sudo apt-get install curl openssh-server ca-certificates postfix
 ```
 
-  - 선택옵션이 표시시는 Internet Site 를 선택(또는 기본값을 사용).
+- 선택옵션이 표시시는 Internet Site 를 선택(또는 기본값을 사용).
 
 - gitlab 설치 프로그램 저장소 추가
 
@@ -226,6 +226,7 @@ last_modified_at: 2023-01-10
 ```
 
 - SSL 인증서 자동갱신 설정
+
 ```bash
   #crontab -e
   10 5 * * 1 /usr/bin/letsencrypt renew >> /var/log/le-renew.log
@@ -287,15 +288,18 @@ last_modified_at: 2023-01-10
 
 
 ### 8-2. 복원
+
 - gitlab 복원을 진행하면 [모든] 사이트 정보가 해당 백업파일 값으로 변경.
 - 사이트 설정, 사용자 설정, 저장소 데이터를 포함한 모든 gitlab 정보가 해당 백업파일 값으로 변경.
 
 #### 암호화키 복사
+
 - 원본 서버에서 /etc/gitlab/gitlab-secrets.json 파일을 복사해서 복원할 서버에 COPY.
 - 이 작업을 하지 않으면 웹UI 상에서 기존의 복원된 사용자 저장소에 대해 정보변경이 되지 않음.
 - 프로젝트 정보 수정시, Whoops, something went wrong on our end. 같은 메세지가 나올 수 있다. 
 
 #### 백업 폴더에 백업 파일 복사
+
 - 백업한 서버와 복원할 서버가 같다면 (이미 이 파일이, 이 위치에 있기 때문에) skip.
 
 ```bash
@@ -362,22 +366,20 @@ last_modified_at: 2023-01-10
 > send-pack: unexpected disconnect while reading sideband packet  
 
 ```bash
-git config --local http.postBuffer 1024M
-git config --local http.maxRequestBuffer 1024M
-git config --local pack.deltaCacheSize 1024M
-git config --local pack.packSizeLimit 1024M
-git config --local pack.windowMemory 1024M
-git config --local core.packedGitLimit 1024m
-git config --local core.packedGitWindowSize 1024m
-git config --local core.compression 9
-git config --local ssh.postBuffer 2048M
-git config --local ssh.maxRequestBuffer 2048M
+  git config --local http.postBuffer 1024M
+  git config --local http.maxRequestBuffer 1024M
+  git config --local pack.deltaCacheSize 1024M
+  git config --local pack.packSizeLimit 1024M
+  git config --local pack.windowMemory 1024M
+  git config --local core.packedGitLimit 1024m
+  git config --local core.packedGitWindowSize 1024m
+  git config --local core.compression 9
+  git config --local ssh.postBuffer 2048M
+  git config --local ssh.maxRequestBuffer 2048M
 
-// 확인
-git config --local -e
+  // 확인
+  git config --local -e
 ```
-
- 
 
 <details>
   <summary>Exp.</summary>  
