@@ -11,8 +11,8 @@ tags:
 toc: false
 toc_sticky: true
 
-date: 2023-01-11
-last_modified_at: 2023-01-11
+date: 2023-01-12
+last_modified_at: 2023-01-12
 ---
 # Spring에서 Kafka Producer 및 Consumer 구현
 
