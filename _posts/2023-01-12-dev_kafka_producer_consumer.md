@@ -24,6 +24,16 @@ last_modified_at: 2023-01-12
 - spring-kafka 라이브러리를 추가하면 관련 디펜던시로 kafka Client 라이브러리가 추가. 
 - spring-kafka 라이브러리는 Admin, Consumer, Producer, Streams 기능을 제공합니다.
 
+>  
+> Java 기반 어플리케이션으로 kafka를 적용할때 사용하는 라이브러리는  
+> spring kafka vs kafka clients 2가지가 있다.  
+> spring-kafka는 kafka-clients보다 레퍼런스가 풍부하며, 고수준의 라이브러리로   
+> 사용자가 사용하기 편리한 장점이 있다.   
+> kafka clients는 저수준의 라이브러리로 사용자가 직접 Configuration을 해줘야하지만  
+> 사용자가 직접 환경설정을 지정해주기 때문에 Consumer, Producer 하나만 셋팅하고   
+> 구현해도 문제 없이 구현된다는 점이 편리하다.   
+>  
+
 - build.gradle에 디펜던시 추가
 
 ```bash
