@@ -818,16 +818,16 @@ spring:
   $ systemctl start zookeeper  
 
   - zookeeper 실행
-  $ ./bin/zookeeper-server-start.sh config/zookeeper.properties
+  $ ./bin/zookeeper-server-start.sh config/zookeeper.properties &
 
   - kafka #1 실행
-  $ ./bin/kafka-server-start.sh config/server.properties
+  $ ./bin/kafka-server-start.sh config/server.properties &
 
   - kafka #2 실행
-  $ ./bin/kafka-server-start.sh config/server-1.properties
+  $ ./bin/kafka-server-start.sh config/server-1.properties &
 
   - kafka #3 실행
-  $ ./bin/kafka-server-start.sh config/server-2.properties
+  $ ./bin/kafka-server-start.sh config/server-2.properties &
 
   - Producer 삭제
   # $ bin/kafka-topics.sh --delete --bootstrap-server 10.222.10.170:9092  --topic dev-replicated-topic 
