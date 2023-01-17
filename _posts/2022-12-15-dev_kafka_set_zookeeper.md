@@ -836,9 +836,9 @@ spring:
   $ bin/kafka-console-producer.sh --broker-list pilot.daiso.com:9096,pilot.daiso.com:9097,pilot.daiso.com:9098 --topic dev-replicated-topic
 
   - Consumer 실행
-  $ bin/kafka-console-consumer.sh --bootstrap-server pilot.daiso.com:9092 --from-beginning --topic dev-replicated-topic
-
   $ bin/kafka-console-consumer.sh --bootstrap-server pilot.daiso.com:9096 --from-beginning --topic dev-replicated-topic
+
+  $ bin/kafka-console-consumer.sh --bootstrap-server pilot.daiso.com:9097 --from-beginning --topic dev-replicated-topic
 
   $ bin/kafka-console-consumer.sh --bootstrap-server pilot.daiso.com:9098 --from-beginning --topic dev-replicated-topic
   
