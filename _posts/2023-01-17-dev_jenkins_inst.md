@@ -202,7 +202,7 @@ enabled=yes
 >  
 > # JAVA 설치 버전이 2개라면 아래 부분의 주석을 제거하고 위에서 복사한 경로로 수정  
 > #Environment="JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64"  
-> Environment="JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.16.1.1-1.el7_9.x86_64"  
+> Environment="JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto/bin/java"  
 
 
 ### 1-7. 초기 어드민 패스워드 입력 
@@ -220,7 +220,16 @@ enabled=yes
   이름 : m2m
   이메일주소 : m2m
 
-## 빌드 및 배포설정  
+## 2. 빌드 및 배포설정  
+
+### 2-1. JDK 환경설정
+
+  - jenkins에 admin 계정으로 로그인 후 'Jenkins 관리' 탭 클릭
+
+### 2-2. GITLAB 환경설정
+
+  - jenkins에 admin 계정으로 로그인 후 'Jenkins 관리' 탭 클릭  
+  - '플러그인 관리' 클릭
 
 <details>
   <summary>Exp.</summary>  
