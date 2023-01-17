@@ -818,27 +818,29 @@ spring:
   $ systemctl start zookeeper  
 
   - zookeeper 실행
-  $ ./bin/zookeeper-server-start.sh config/zookeeper.properties &
+  $ bin/zookeeper-server-start.sh config/zookeeper.properties &
 
   - kafka #1 실행
-  $ ./bin/kafka-server-start.sh config/server.properties &
+  $ bin/kafka-server-start.sh config/server.properties &
 
   - kafka #2 실행
-  $ ./bin/kafka-server-start.sh config/server-1.properties &
+  $ bin/kafka-server-start.sh config/server-1.properties &
 
   - kafka #3 실행
-  $ ./bin/kafka-server-start.sh config/server-2.properties &
+  $ bin/kafka-server-start.sh config/server-2.properties &
 
   - Producer 삭제
-  # $ bin/kafka-topics.sh --delete --bootstrap-server 10.222.10.170:9092  --topic dev-replicated-topic 
+  # $ bin/kafka-topics.sh --delete --bootstrap-server pilot.daiso.com:9092  --topic dev-replicated-topic 
 
   - Producer 실행  
-  $ bin/kafka-console-producer.sh --broker-list 10.222.10.170:9092,10.222.10.170:9096,localhost:9098 --topic dev-replicated-topic
+  $ bin/kafka-console-producer.sh --broker-list pilot.daiso.com:9096,pilot.daiso.com:9097,pilot.daiso.com:9098 --topic dev-replicated-topic
 
   - Consumer 실행
-  $ bin/kafka-console-consumer.sh --bootstrap-server 10.222.10.170:9092 --from-beginning --topic dev-replicated-topic
-  $ bin/kafka-console-consumer.sh --bootstrap-server 10.222.10.170:9096 --from-beginning --topic dev-replicated-topic
-  $ bin/kafka-console-consumer.sh --bootstrap-server 10.222.10.170:9098 --from-beginning --topic dev-replicated-topic
+  $ bin/kafka-console-consumer.sh --bootstrap-server pilot.daiso.com:9092 --from-beginning --topic dev-replicated-topic
+
+  $ bin/kafka-console-consumer.sh --bootstrap-server pilot.daiso.com:9096 --from-beginning --topic dev-replicated-topic
+
+  $ bin/kafka-console-consumer.sh --bootstrap-server pilot.daiso.com:9098 --from-beginning --topic dev-replicated-topic
   
 ```
 
