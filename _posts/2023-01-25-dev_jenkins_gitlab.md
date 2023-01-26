@@ -30,16 +30,30 @@ last_modified_at: 2023-01-25
 
 ## 2. gitlab Web hook 설정
 
+![inst gitlab](./../../images/tech/jenkins_gitlab_03.png)
+
+- 하단 SSL verification 의 Enable SSL verification 체크해제
 
 ### 참고. Jenkins 유저로 전환
 
 ```bash
-su - jenkins -s /bin/bash
+  su - jenkins -s /bin/bash
 
-sudo chown -R jenkins /usr/local/lib/node_modules/
-sudo chown -R jenkins /usr/local/bin/
-sudo chown -R jenkins /usr/local/share/
+  sudo chown -R jenkins /usr/local/lib/node_modules/
+  sudo chown -R jenkins /usr/local/bin/
+  sudo chown -R jenkins /usr/local/share/
 ```
+
+
+
+
+```bash
+  cp /apps/daiso-backend/build.gradle /apps/daiso-bo/build.gradle
+  cp /apps/daiso-backend/settings.gradle /apps/daiso-bo/settings.gradle
+```
+
+
+
 
 <details>
   <summary>Exp.</summary>  
