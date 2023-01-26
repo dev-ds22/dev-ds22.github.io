@@ -619,6 +619,19 @@ bootJar.enabled = false
   - https://lemontia.tistory.com/1054  
 
 
+##### Jenkins 유저로 전환
+
+```bash
+ su - jenkins -s /bin/bash
+
+sudo chown -R jenkins /usr/local/lib/node_modules/
+sudo chown -R jenkins /usr/local/bin/
+sudo chown -R jenkins /usr/local/share/
+```
+
+
+
+
 <details>
   <summary>Exp.</summary>  
   <pre>
@@ -628,7 +641,7 @@ bootJar.enabled = false
 # FrontOffice
 ```bash
 npm install --force &&
-npm run devbuild &&
+npm run build &&
 pm2 stop -s front-end || :
 pm2 delete -s front-end || :
 set DEBUG=express:* & pm2 start npm --name front-end -- run start

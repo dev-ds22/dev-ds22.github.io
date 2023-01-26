@@ -34,7 +34,7 @@ last_modified_at: 2023-01-25
 
 - 하단 SSL verification 의 Enable SSL verification 체크해제
 
-### 참고. Jenkins 유저로 전환
+#### 참고.1 Jenkins 유저로 전환
 
 ```bash
   su - jenkins -s /bin/bash
@@ -52,8 +52,73 @@ last_modified_at: 2023-01-25
   cp /apps/daiso-backend/settings.gradle /apps/daiso-bo/settings.gradle
 ```
 
+#### 참고.2 Spring Boot 어플리케이션 실행시 pid 파일을 생성
+- application.yaml
 
+```bash
+  spring: 
+    pid:
+      file: /apps/pilot/build/mo_boot.pid    
+```
 
+- Applcation 설정
+
+```java
+  @SpringBootApplication
+  public class TestApplication {
+
+      public static void main(String[] args) {
+          SpringApplication application = new SpringApplication(TestApplication.class);
+          application.addListeners(new ApplicationPidFileWriter());
+          application.run(args);
+      }
+  }
+```
+
+- 실제 사용할 때 아래와 같이 실행하면 pid 파일에 숫자가 채워진다.
+
+```bash
+  BUILD_ID=dontKillMe nohup java -Dspring.profiles.active=dev -jar $JAR_PATH >> /var/lib/jenkins/workspace/nohup_daiso_mo.out &
+```
+
+$ cat mo_boot.pid # 다른 터미널에서 확인해보면 숫자가 채워진 것을 알 수 있다.
+
+- 부트 어플리케이션 종료
+
+```bash
+  $ kill `cat test.pid` # WAS 종료 시
+```
+
+### Spring 내장 Tomcat 동작시 nohup 동작안될 때
+- jenkins는 빌드 과정을 모두 마친 후, jenkins 사용자로 실행된 child process를 모두 kill 시키기 때문에 nohup같은 명령어가 계속 종료되는 현상이 발생.
+- 이를 방지하기 위해 nohup 명령어 앞에 BUILD_ID=dontKillMe를 붙임.
+- 젠킨스 build과정을 모두 마친 후, 종료되지 않기를 원하는 명령어에는 반드시 BUILD_ID=dontKillMe 를 추가.
+
+```bash
+#!/bin/bash
+echo "DA-FO Backend PID Check..."
+
+CURRENT_PID=`cat /apps/pilot/build/fo_boot.pid`
+JAR_PATH=/apps/daiso-fo/daiso-fo/build/libs/daiso-fo.jar
+
+echo "Running PID - DA-FO : {$CURRENT_PID}"
+
+if [ -z "$CURRENT_PID" ]
+then
+  echo "DA-FO Project is not running"
+else
+  if ps -p $CURRENT_PID > /dev/null 2>&1 ; then
+  	kill -15 $CURRENT_PID
+  	sleep 10
+  fi
+fi
+
+echo "Deploy DA-FO Project...."
+
+BUILD_ID=dontKillMe nohup java -Dspring.profiles.active=dev -jar $JAR_PATH >> /var/lib/jenkins/workspace/nohup_daiso_fo.out &
+
+echo "Done"
+```
 
 <details>
   <summary>Exp.</summary>  
