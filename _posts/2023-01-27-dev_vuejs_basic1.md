@@ -357,8 +357,17 @@ module.exports = {
 
 - "chunkhash:8" 대신 "hash" 적용가능.
 
-#### 관련자료
-- Router 활용한 접근제어, https://ospace.tistory.com/787
+#### **webpack에서 제공하는 hash의 종류**
+- hash, chunkhash, contenthash 
+- 1. hash
+  - hash를 사용할 경우 모든 output파일이 같은 hash 값으로 생성.
+  - webpack 빌드시 고유한 hash 값 생성
+- 2. chunkhash
+  - chunkhash를 사용할 경우 모든 output파일이 chunk별로 chunkhash 값이 생성.
+  - 파일 수정시 해당파일의 chunkhash 값만 변경.
+  - 파일이 변경되지 않은 상태에서 빌드를 하게 되면 hash 값이 변경되지 않음.
+- 3. contenthash
+  - *ExtractTextPlugin으로 생성되는 css파일 같은 chunk에 포함되지않는 파일의 경우에는 [contenthash]를 사용.
 
 #### 참고.1 Quasar pulgin 
 - 개발 비용을 대폭 절감가능. 
