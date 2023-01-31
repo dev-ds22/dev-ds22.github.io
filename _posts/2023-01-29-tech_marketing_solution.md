@@ -15,7 +15,7 @@ date: 2023-01-29
 last_modified_at: 2023-01-29
 ---
 
-## Braze (CRM마켓팅 솔루션)
+# Braze (CRM마켓팅 솔루션)
 - 마케팅 자동화 & 개인화 솔루션. 
 - 인앱(In-App), 인브라우저(In-Browser) 메시지, 푸시 메시지, 이메일, SMS, 카카오 친구톡, 알림톡 등의 멀티 채널 플랫폼에 개인화된 메시지를 보낼 수 있는 서비스 제공.
 - 유저 개개인의 라이프사이클을 파악, 그 단계에 맞는 메시지 전송으로 고객 재방문과 재구매 촉진. 
@@ -26,7 +26,9 @@ last_modified_at: 2023-01-29
 - A/B 테스트 기능을 제공하여 최적화된 푸시 메시지 설정 가능.
 - 고객이 앱을 삭제하였더라도 이메일이나 문자를 보내 고객들을 복귀시키게 할 수도 있음.
 
-## Amplitude (이벤트 기반 사용자 행동분석 솔루션)
+---
+
+# Amplitude (이벤트 기반 사용자 행동분석 솔루션)
 - 제품 분석을 위한 목적으로 만들어진 Solution으로 사용자의 행동을 Event로 정의하여 이벤트 흐름(Event stream)을 측정.
 
 > 제품 분석은 사용자가 제품 또는 서비스에 참여하는 방식을 분석하는 프로세스. 이를 통해 제품 담당자는 사용자 참여 및 행동 데이터를 추적, 시각화 및 분석.  
@@ -66,7 +68,58 @@ last_modified_at: 2023-01-29
 - 참고 사이트2 : https://dm-note.tistory.com/entry/google-analytics-vs-amplitude
 - 참고 사이트3 : https://brunch.co.kr/@doit-dev/9
 
-## GA vs GA360 vs GA4 비교.
+---
+
+# Groobee (AI 개인화 상품추천 솔루션)
+- 상품 기반 AI 알고리즘, 방문자 이력 기반 AI 알고리즘, 통계형 알고리즘 등 총 22가지 추천 알고리즘.
+- 연관 상품, 보완 상품, 협업 필터링, 사용자 취향 기반, 구매 패턴 기반 등 구매 상황이나 페이지 특성에 맞춰 전략적 상품 추천. 
+- 최적의 추천 알고리즘 자동 적용
+
+```javascript
+  // groobeeUtil
+  getGroobeePrefRecommend (area, gender, age) {
+    const campaignKeys = {
+      local: '',
+      dev: '',
+      stg: '',
+      prd: '',
+      defalut: ''
+    }
+    try {
+      console.log('getGroobeePrefRecommend', campaignKeys[campaignKeys] ?? campaignKeys.defalut, area, gender, age)
+      return groobee.getGroobeeRecommend(campaignKeys[campaignKeys] ?? campaignKeys.defalut, { area, gender, age })
+    } catch (e) {
+      console.log(e)
+      return null
+    }
+  },
+
+  // 추천목록 받기
+  getGroobeeRecommend (algorithmCd, campaignKey, goodsArray) {
+    console.log('getGroobeeRecommend', algorithmCd, campaignKey, goodsArray)
+    this.getGroobeeRecommendList(algorithmCd, campaignKey, goodsArray)
+  },
+
+  // 필터된 항목 중 클릭한 아이템
+  setGroobeeRecommendClick (algorithmCd, campaignKey, carCd) {
+    console.log('setGroobeeRecommendClick', algorithmCd, campaignKey, carCd)
+    const groobeeObj = {
+      algorithmCd,
+      campaignKey,
+      campaignTypeCd: 'RE',
+      goods: [{ goodsCd: carCd }]
+    }
+    groobee.send('CL', groobeeObj)
+  }
+```
+
+```javascript
+  import { groobeeUtil } from '~/mixin/groobeeUtil'
+```
+
+---
+
+# GA vs GA360 vs GA4 비교.
 
 ### GA(Google Analytics, 구글애널리틱스 스텐다드)
 
