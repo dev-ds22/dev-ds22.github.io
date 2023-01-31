@@ -37,7 +37,7 @@ last_modified_at: 2023-01-31
   - 1) 파일 스토리지
   - 2) 블록 스토리지
   - 3) 객체 스토리지
-  
+
 - AWS는 블록 스토리지와 객체 스토리지를 중점적으로 제공
 
 #### 파일 스토리지
@@ -332,8 +332,6 @@ CloudFront로부터 Origin 사이의 통신을 암호화
   
 # CLOUDFRONT + LAMBDA@EDGE를 활용한 IMAGE RESIZING
 
-- 참조 : https://manvscloud.com/?p=423
-
 ![IMAGE RESIZING](./../../images/tech/imageresize-10.png)
 
 1. URI에 원하는 해상도의 이미지를 요청합니다.
@@ -348,6 +346,8 @@ CloudFront로부터 Origin 사이의 통신을 암호화
 5. 이미지 리사이징 서버(Lambda@Edge)는 스토리지 서버(S3)에게 이미지를 받은 후 요청한 URI를 해석한 뒤 원하는 이미지로 리사이징하여 캐시 서버(CloudFront/Edge Location)로 전송합니다.
 
 6. 요청한 해상도의 이미지를 GET 합니다.
+
+- 참조 : https://manvscloud.com/?p=423
 
 ---
 
