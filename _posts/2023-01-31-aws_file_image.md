@@ -233,42 +233,40 @@ last_modified_at: 2023-01-31
 ![동적 / 정적 컨텐츠 처리](./../../images/tech/cloudfront03.png)
 
 ### HTTPS 지원
-Origin에서 HTTPS를 지원하지 않더라도 클라우드 프론트내에서 HTTPS 통신을 지원할 수 있도록 구성 가능
+- Origin에서 HTTPS를 지원하지 않더라도 클라우드 프론트내에서 HTTPS 통신을 지원할 수 있도록 구성 가능
+- **S3 정적 웹 호스팅 URL 같은 경우 SSL설정이 쉽지 않은데, CloudFront를 통해서 HTTPS 통신을 지원할수 있게 설정 가능.**
 
-예를 들어, S3 정적 웹 호스팅 URL 같은 경우 SSL설정이 쉽지 않은데, CloudFront를 통해서 HTTPS 통신을 지원할수 있게끔 할 수 있다.
-
-HTTPS 지원
+![HTTPS 지원](./../../images/tech/cloudfront04.png)
 
 ### 지리적 제한 설정
-특정 지역의 컨텐츠 접근을 제한 가능 하다.
+- 특정 지역의 컨텐츠 접근을 제한 가능.
 
-예를들어 아프키라 티비 스트리밍 서비스를 하는데 라이센스나 계약에 따라 일본권에서는 볼 수 있지만, 아프리카권은 볼수 없게 설정 가능하다.
-
-지리적 제한 설정
-
+![지리적 제한 설정](./../../images/tech/cloudfront05.png)
 
 ### 다른 서비스와 연계
 - AWS WAF, Lambda@Edge 등과 연동 가능
 
 #### Lambda@Edge
-엣지 로케이션에서 돌아가는 람다
-람다엣지 사용 사례 :
-한국에서 요청이 올 경우 한국 웹서버, 미국에서 요청이 올 경우 미국 웹서버로 분산
-커스텀 에러 페이지
-Cookie를 검사해 다른 페이지로 리다이렉팅 → A/B 테스팅
-CloudFront에서 Origin 도착 이전에 인증 ..등
-Lambda@Edge
-유저에서 CloudFront 도착하기 전,
-CloudFront에서 Origin에 요청 보내기 전,
-Origin에서 CloudFront로 응답을 보내기 전,
-CloudFront에서 유저한테 응답 보내기 전
-이 4단계에서 람다를 실행 해서 이 전달 내용을 변경 할 수 있다.
+- 엣지 로케이션에서 Lambda 처리 가능
+- 람다엣지 사용 사례 :
+  - 한국에서 요청이 올 경우 한국 웹서버, 미국에서 요청이 올 경우 미국 웹서버로 분산
+  - 커스텀 에러 페이지
+  - Cookie를 검사해 다른 페이지로 리다이렉팅 → A/B 테스팅
+  - CloudFront에서 Origin 도착 이전에 인증 ..등
+
+![Lambda@Edge](./../../images/tech/cloudfront06.png)
+
+- 이하 4단계에서 람다를 적용, 전달 내용 변경 가능.
+  - 유저에서 CloudFront 도착하기 전,
+  - CloudFront에서 Origin에 요청 보내기 전,
+  - Origin에서 CloudFront로 응답을 보내기 전,
+  - CloudFront에서 유저한테 응답 보내기 전
+
 
 #### CloudFront Function
-Lambda@Edge의 6분의 1 비용으로 경량 javascript 실행
-아주 간단한 액션에서만 사용
-사용사례 : 캐싱, 헤더 조작 등
-
+- Lambda@Edge의 6분의 1 비용으로 경량 javascript 실행
+- 아주 간단한 액션에서만 사용
+- 사용사례 : 캐싱, 헤더 조작 등
 
 ## 3-6. CloudFront 정책과 보안
 
@@ -276,57 +274,51 @@ Lambda@Edge의 6분의 1 비용으로 경량 javascript 실행
 - CloudFront는 총 3가지 정책 설정 가능.
 
 #### 정책1. 캐시 정책 (Cache Control) : 캐싱 방법 및 압축
-TTL 및 Cache Key 정책
-CloudFront가 어떻게 캐싱을 할지를 결정
+- TTL 및 Cache Key 정책
+- CloudFront가 어떻게 캐싱을 할지를 결정
 #### 정책2. 원본 요청 정책 (Origin Request) : Origin으로 어떤 내용을 보낼 것인가
-Origin에 쿠키, 헤더, 쿼리스트링 중 어떤 것을 보낼 것인가
+- Origin에 쿠키, 헤더, 쿼리스트링 중 어떤 것을 보낼 것인가
 
 #### 정책3. 응답 헤더 정책
-CloudFront가 응답과 함께 실어 보낼 HTTP Header
-CloudFront 정책
+- CloudFront가 응답과 함께 실어 보낼 HTTP Header
+
+![CloudFront 정책](./../../images/tech/cloudfront07.png)
 
 ### 2. CloudFront 보안
  
+#### Signed URL
+- 어플리케이션에서 CloudFront의 컨텐츠에 접근 할 수 있는 URL을 제공하여 컨텐츠 제공을 제어.
+- URL에는 시작시간, 종료시간, IP, 파일명, URL의 유효기간 등의 정보를 담을 수 있음
+- 이 URL 접근 이외의 접근을 막고 허용된 유저에게만 URL을 전달하여 컨텐츠 제공을 제어 가능
+- 단 하나의 파일 또는 컨텐츠에 대한 허용만 가능
+- S3 Signed URL과 비슷한 방식
 
-Signed URL
-어플리케이션에서 CloudFront의 컨텐츠에 접근 할 수 있는 URL을 제공하여 컨텐츠 제공을 제어하는 방법이다.
+![Signed URL](./../../images/tech/cloudfront08.png)
+ 
+#### Signed Cookie
+- Signed URL은 하나의 컨텐츠만 제공 제어를 한다고 하면, Signed Cookie는 다수의 컨텐츠의 제공방식을 제어하고 싶을 때 사용.
+- Signed URL과 마찬가지로 여러 제약사항 설정 가능
+- 다수의 파일 및 스트리밍 접근 허용 가능
+- 사용사례 : 정기 구독 프리미엄 유저만 볼 수 있는 강의 동영상 등
 
-URL에는 시작시간, 종료시간, IP, 파일명, URL의 유효기간 등의 정보를 담을 수 있음
-이 URL 접근 이외의 접근을 막고 허용된 유저에게만 URL을 전달하여 컨텐츠 제공을 제어 가능
-단 하나의 파일 또는 컨텐츠에 대한 허용만 가능
-S3 Signed URL과 비슷한 방식
-Signed URL
+![Signed Cookie](./../../images/tech/cloudfront09.png)
  
 
-Signed Cookie
-Signed URL은 하나의 컨텐츠만 제공 제어를 한다고 하면, Signed Cookie는 다수의 컨텐츠의 제공방식을 제어하고 싶을 때 사용된다.
-
-Signed URL과 마찬가지로 여러 제약사항 설정 가능
-다수의 파일 및 스트리밍 접근 허용 가능
-사용사례 : 정기 구독 프리미엄 유저만 볼 수 있는 강의 동영상 등
-Signed Cookie
+#### Origin Access Identity (OAI)
+- S3의 컨텐츠를 CloudFront를 사용해서만 볼 수 있도록 제한.
+- S3의 정적인 컨텐츠 URL로 바로 접근하는게 아니라 CDN을 통해서만 접근. 
+- S3로 직접 접속을 하면 캐싱을 못해 속도 측면에서 마이너스가 될수 있고, 국가별 라우팅, 인증 등이 CloudFront에 구현 되어있다면 유저가 직접 S3로 접속하면 안되기 때문.
+- CloudFront만 권한을 가지고 S3에 접근하고 나머지 접근권한은 막음 
+  - → CloudFront는 유저와 S3사이에서 중개하는 역할
+- S3 Bucket Policy로 CloudFront의 접근을 허용해야 사용 가능
  
 
-Origin Access Identity (OAI)
-S3의 컨텐츠를 CloudFront를 사용해서만 볼 수 있도록 제한하는 방법이다.
+#### Field Level Encryption
+- CloudFront로부터 Origin 사이의 통신을 암호화
+- 최대 10개의 필드까지 가능
+- 공개키 방식으로 암호화 → CloudFront에 공개키를 제공 후 Origin에서 Private Key로 해독
 
-즉, S3의 정적인 컨텐츠 URL로 바로 접근하는게 아니라 CDN을 통해서 접근하는 것이다. 
-
-왜냐하면 S3로 직접 접속을 하면 캐싱을 못해 속도 측면에서 마이너스가 될수 있고, 국가별 라우팅, 인증 등이 CloudFront에 구현 되어있다면 유저가 직접 S3로 접속하면 안되기 때문이다.
-
-S3는 CloudFront와 잘 맞는다 → 정적인 컨텐츠를 호스팅 하기 때문에 CDN과 찰떡궁합
-CloudFront만 권한을 가지고 S3에 접근하고 나머지 접근권한은 막음 → CloudFront는 유저와 S3사이에서 중개하는 역할
-S3 Bucket Policy로 CloudFront의 접근을 허용해야 사용 가능
-Origin Access Identity (OAI)
- 
-
-Field Level Encryption
-CloudFront로부터 Origin 사이의 통신을 암호화
-최대 10개의 필드까지 가능
-공개키 방식으로 암호화 → CloudFront에 공개키를 제공 후 Origin에서 Private Key로 해독
-
-참고사이트 : https://inpa.tistory.com/entry/AWS-%F0%9F%93%9A-CloudFront-%EA%B0%9C%EB%85%90-%EC%9B%90%EB%A6%AC-%EC%82%AC%EC%9A%A9-%EC%84%B8%ED%8C%85-%F0%9F%92%AF-%EC%A0%95%EB%A6%AC
-
+- 참고사이트 : https://inpa.tistory.com/entry/AWS-%F0%9F%93%9A-CloudFront-%EA%B0%9C%EB%85%90-%EC%9B%90%EB%A6%AC-%EC%82%AC%EC%9A%A9-%EC%84%B8%ED%8C%85-%F0%9F%92%AF-%EC%A0%95%EB%A6%AC
   
 ---
   
