@@ -270,23 +270,20 @@ CloudFront로부터 Origin 사이의 통신을 암호화
 
 ![IMAGE RESIZING](./../../images/tech/imageresize-10.png)
 
-- 1. URI에 원하는 해상도의 이미지를 요청합니다.
+1. URI에 원하는 해상도의 이미지를 요청합니다.
   - ex) https://img.manvscloud.com/image/tom.png?w=200&h=150&f=webp&q=90
 
-- 2. 캐시 서버(CloudFront/Edge Location)에서 캐싱된 이미지가 있으면 이미지를 전송하지만 캐시된 이미지가 없을 경우 이미지 리사이징 서버(Lambda@Edge)에 API 또는 SDK를 이용한 리사이징된 이미지를 요청합니다.
+2. 캐시 서버(CloudFront/Edge Location)에서 캐싱된 이미지가 있으면 이미지를 전송하지만 캐시된 이미지가 없을 경우 이미지 리사이징 서버(Lambda@Edge)에 API 또는 SDK를 이용한 리사이징된 이미지를 요청합니다.
 
-- 3. 이미지 리사이징 서버(Lambda@Edge)는 API나 SDK를 통해 이미지가 존재하는 스토리지 서버(S3)에 원본 이미지를 요청하게 됩니다.
+3. 이미지 리사이징 서버(Lambda@Edge)는 API나 SDK를 통해 이미지가 존재하는 스토리지 서버(S3)에 원본 이미지를 요청하게 됩니다.
 
-- 4. 스토리지 서버(S3)가 이미지 리사이징 서버(Lambda@Edge)로 이미지를 전송합니다.
+4. 스토리지 서버(S3)가 이미지 리사이징 서버(Lambda@Edge)로 이미지를 전송합니다.
 
-- 5. 이미지 리사이징 서버(Lambda@Edge)는 스토리지 서버(S3)에게 이미지를 받은 후 요청한 URI를 해석한 뒤 원하는 이미지로 리사이징하여 캐시 서버(CloudFront/Edge Location)로 전송합니다.
+5. 이미지 리사이징 서버(Lambda@Edge)는 스토리지 서버(S3)에게 이미지를 받은 후 요청한 URI를 해석한 뒤 원하는 이미지로 리사이징하여 캐시 서버(CloudFront/Edge Location)로 전송합니다.
 
-- 6. 요청한 해상도의 이미지를 GET 합니다.
+6. 요청한 해상도의 이미지를 GET 합니다.
 
-
-
-
-
+---
 
 <details>
   <summary>Exp.</summary>  

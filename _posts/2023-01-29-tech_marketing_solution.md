@@ -62,9 +62,9 @@ last_modified_at: 2023-01-29
 - 이벤트 기반으로 설계된 앰플리튜드의 경우, 페이지 뷰는 페이지 뷰 이벤트로, 다른 행동들은 또 다른 행동 이벤트로 모두 트래킹할 수 있기 때문에, 훨씬 가변적으로 데이터를 수집할 수 있으며 이 모든 데이터를 앰플리튜드의 모든 차트에서 활용할 수 있다는 장점을 가지고 있다. 
 - 구글 애널리틱스에 비해 데이터를 폭 넓게 사용할 수 있는 기반을 가지고 있다고 봐도 무방.
 
-참고 사이트1 : https://blog.wiselycompany.com/wisely-amplitude
-참고 사이트2 : https://dm-note.tistory.com/entry/google-analytics-vs-amplitude
-참고 사이트3 : https://brunch.co.kr/@doit-dev/9
+- 참고 사이트1 : https://blog.wiselycompany.com/wisely-amplitude
+- 참고 사이트2 : https://dm-note.tistory.com/entry/google-analytics-vs-amplitude
+- 참고 사이트3 : https://brunch.co.kr/@doit-dev/9
 
 ## GA vs GA360 vs GA4 비교.
 
