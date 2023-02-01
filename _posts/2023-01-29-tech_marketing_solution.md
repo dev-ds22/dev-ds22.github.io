@@ -15,7 +15,7 @@ date: 2023-01-29
 last_modified_at: 2023-01-29
 ---
 
-# Braze (CRM마켓팅 솔루션)
+# Braze (CRM마켓팅 솔루션, MMA - 마켓팅 자동화 솔루션)
 - 마케팅 자동화 & 개인화 솔루션. 
 - 인앱(In-App), 인브라우저(In-Browser) 메시지, 푸시 메시지, 이메일, SMS, 카카오 친구톡, 알림톡 등의 멀티 채널 플랫폼에 개인화된 메시지를 보낼 수 있는 서비스 제공.
 - 유저 개개인의 라이프사이클을 파악, 그 단계에 맞는 메시지 전송으로 고객 재방문과 재구매 촉진. 
@@ -138,6 +138,21 @@ last_modified_at: 2023-01-29
 - 2019년 신설, WEB과 APP을 심리스(구글피셜)하게 보기위한 GA.
 - GA360처럼 유료버전을 쓰지 않아도 BigQuery로 데이터를 보내주기때문에, RawData를 쿼리비용만 내고 사용가능.
 - GAUI에 비해 GA4 UI에서는 많을것을 보여주지 않고, 데이터 분석을 위해 제대로 사용하기 위해선, BugQuery에 익숙해야 함.
+
+  
+---
+  
+# Firebase
+- iOS 및 Android 모바일 개발자를 위한 Google 플랫폼
+- FCM(Firebase Cloud Messaging)을 통해 PUSH 서비스 가능
+  - Firebase를 이용한 PUSH 서비스를 구현할 때에는 Firebase 계정 및 Key 필요.
+- GA360, GA4는 APP 데이터의 Firebase 연동을 통해 Analytics 제공
+  - GA 도입시 APP 데이터의 연동을 위해서는 Firebase 계정 필요할 듯
+
+- CRM솔루션인 BRAZE를 이용하면 이메일, 푸시, 인앱 메시지 서비스가 가능한듯 합니다.
+- 참고 : http://minhyun0821.com/braze_message/
+
+
 
 <details>
   <summary>Exp.</summary>  
