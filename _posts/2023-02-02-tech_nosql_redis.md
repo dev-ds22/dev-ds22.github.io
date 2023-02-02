@@ -18,8 +18,9 @@ last_modified_at: 2023-02-02
 # 1. NosSQL(DynamoDB) 와 REDIS 비교
 
 - DynamoDB와 Redis는 키-값 쌍 데이터 스토리지 형식을 지원하는 널리 사용되는 NoSQL DB솔루션. 
-- 유사점과 차이점에 대해 설명.
-
+  
+---  
+  
 # 2. DynamoDB 및 Redis 개요
 
 ## DynamoDB
@@ -31,13 +32,17 @@ last_modified_at: 2023-02-02
 - 캐싱, 세션 관리 및 실시간 분석으로 유명한 빠르고 안정적인 오픈 소스 데이터 저장소. 
 - 해시, 문자열, 비트맵, 목록, 집합 및 정렬된 집합을 비롯한 다양한 데이터 구조를 지원.
 - BSD 라이선스를 사용으로 상업적 목적으로 자유롭게 사용가능.
-
+  
+---  
+  
 # 3. DynamoDB와 Redis의 유사점
 
 - DynamoDB 및 Redis는 빠르고 강력하며 안정적인 NoSQL DB. 
 - 기본 데이터베이스 모델로 키-값 저장소를 사용하고 문서 모델을 지원.
 - 파티셔닝 방법으로 샤딩사용. 둘 다 신뢰할 수 있고 널리 사용되는 DB솔루션.
-
+  
+---  
+  
 # 4. DynamoDB와 Redis의 성능비교
 
 ## 4-1. 지연시간 및 성능 비교
@@ -90,7 +95,9 @@ last_modified_at: 2023-02-02
 ### REDIS
 - Redis Enterprise를 사용하면 Amazon S3 및 Azure Blob Storage 또는 FTP와 같은 주요 퍼블릭 클라우드 스토리지 솔루션에 모든 샤드의 데이터베이스 스냅샷을 백업가능. 
 - Redis 오픈 소스는 데이터 세트를 디스크에 복사하는 특정 시점 백업 지원.
-
+  
+---  
+  
 # 5. 사용 사례
 
 ## DynamoDB
