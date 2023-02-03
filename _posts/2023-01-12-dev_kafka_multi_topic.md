@@ -117,6 +117,27 @@ kafka:
 - kafka.topic.member의 설정을 쉼표(,)로 split 해서 리스트로 만든다는 의미.
 - SpEL을 이용해서 설정은 하나인데 여러 개의 토픽을 쉽게 사용.
 
+--- 
+### kafkaListener 속성 
+- autoStartup : 컨테이너 팩터리의 기본 설정을 재정의하려면 true 또는 false로 설정.
+- batch : 컨테이너 팩터리의 batchListener속성을 재정의.
+- beanRef : 이 리스너가 정의된 현재 bean을 참조하기 위해 이 주석 내의 SpEL 표현식에 사용되는 pseudo bean name.
+- clientIdPrefix : 제공되면 consumer factory configuration의 client id 속성을 재정의.
+- concurrency : container factory's concurrency setting의 concurrency listener을 재정의.
+- containerFactory : The bean name of the KafkaListenerContainerFactory to use to create the message listener container responsible to serve this endpoint.
+- containerGroup : If provided, the listener container for this listener will be added to a bean with this value as its name, of type Collection<MessageListenerContainer>.
+- contentTypeConverter : Set the bean name of a SmartMessageConverter (such as the CompositeMessageConverter) to use in conjunction with the MessageHeaders.CONTENT_TYPE header to perform the conversion to the required type.
+- errorHandler : KafkaListenerErrorHandler리스너 메서드가 예외를 던질 경우 호출할 빈 이름을 설정.
+- filter : RecordFilterStrategy컨테이너 팩토리에 구성된 전략을 재정의하도록 빈 이름을 설정.
+- groupId : group.id이 리스너에 대해서만 이 값으로 소비자 팩토리 의 속성을 재정의.
+- id : listener에 대한 컨테이너의 고유 식별자.
+- idIsGroup : When groupId is not provided, use the id (if provided) as the group.id property for the consumer.
+- info : 키가 있는 헤더로 추가될 정적 정보입니다 KafkaHeaders.LISTENER_INFO.
+- properties : Kafka consumer properties; they will supersede any properties with the same name defined in the consumer factory (if the consumer factory supports property overrides).
+- splitIterables : When false and the return type is an Iterable return the result as the value of a single reply record instead of individual records for each element..
+- topicPartitions : The topicPartitions for this listener when using manual topic/partition assignment.
+- topicPattern : The topic pattern for this listener.
+- topics : The topics for this listener.
 
 <details>
   <summary>Exp.</summary>  

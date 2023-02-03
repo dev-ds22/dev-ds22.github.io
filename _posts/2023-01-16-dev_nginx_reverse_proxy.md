@@ -15,9 +15,169 @@ date: 2023-01-16
 last_modified_at: 2023-01-16
 ---
 
-# 실제로 사용 가능한 nginx 프록시 서버 만들기 (docker-compose)
-2021.02.17웹개발
-개요
+# SSL 및 Reverse-Proxy 설정
+
+1. vi /etc/nginx/nginx.conf
+2. SSL 설정 추가
+3. reverse-proxy 설정 추가
+4. 포트 열기
+  - firewall-cmd --zone=public --permanent --add-port={Post 번호}/tcp
+5. 설정 내용을 반영.
+  - firewall-cmd --reload
+6. nginx 재시작
+  - systemctl nginx stop
+  - systemctl nginx start
+
+### 참고 
+- 활성화 상태의 zone 리스트
+  - firewall-cmd --get-active-zones
+- 서비스 리스트
+  - firewall-cmd --get-service
+- 특정 존에 있는 서비스 리스트
+  - public 존에 있는 열린포트 확인
+  - firewall-cmd --zone=public --list-all
+
+## SSL 설정
+
+```bash
+  server {
+    listen       445 ssl http2;
+    listen       [::]:445 ssl http2;
+    server_name  _;
+    root         /usr/share/nginx/html;
+
+    ssl_certificate "/var/lib/jenkins/secrets/server.crt";
+    ssl_certificate_key "/var/lib/jenkins/secrets/server.key";
+
+```
+
+## reverse-proxy 설정
+
+```bash
+  location / {
+    proxy_pass http://127.0.0.1:8013;
+  }
+```
+
+## rewrite 필요시
+
+2. rewrite
+/api/~~~에서 /api 부분은 제외하고 요청을 보내고 싶다면 rewrite 구문을 사용하면 된다.
+
+```bash
+// nginx.conf
+
+location /api {
+    rewrite ^/api(.*)$ $1?$args break;
+    proxy_pass   http://express-server;
+    ...
+}
+```
+- /api/posts?id=1 이라는 요청이 들어왔을 때, /api 이후에 오는 uri가 $1 이 된다.
+(정규표현식 capturing group)
+- nginx에서 proxy를 사용할 때 기본적으로 GET요청 시 같이 보내는 argument가 보내지지 않는데, &args 변수를 사용하면 같이 보낸 argument에 접근할 수 있다.
+- /api/posts?id=1 은 /posts?id=1 로 rewrite 되어서 전송이 된다.
+
+#### 참고 (/etc/nginx/nginx.conf)
+```bash
+  # For more information on configuration, see:
+  #   * Official English Documentation: http://nginx.org/en/docs/
+  #   * Official Russian Documentation: http://nginx.org/ru/docs/
+
+  user nginx;
+  worker_processes auto;
+  error_log /var/log/nginx/error.log;
+  pid /run/nginx.pid;
+
+  # Load dynamic modules. See /usr/share/doc/nginx/README.dynamic.
+  include /usr/share/nginx/modules/*.conf;
+
+  events {
+      worker_connections 1024;
+  }
+
+  http {
+      log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+
+      access_log  /var/log/nginx/access.log  main;
+
+      sendfile            on;
+      tcp_nopush          on;
+      tcp_nodelay         on;
+      keepalive_timeout   65;
+      types_hash_max_size 4096;
+
+      include             /etc/nginx/mime.types;
+      # Load modular configuration files from the /etc/nginx/conf.d directory.
+      # See http://nginx.org/en/docs/ngx_core_module.html#include
+      # for more information.
+      include /etc/nginx/conf.d/*.conf;
+
+      server {
+          listen       81;
+          listen       [::]:81;
+          server_name  _;
+          root         /usr/share/nginx/html;
+
+
+          # Load configuration files for the default server block.
+          include /etc/nginx/default.d/*.conf;
+
+          error_page 404 /404.html;
+          location = /404.html {
+          }
+
+          error_page 500 502 503 504 /50x.html;
+          location = /50x.html {
+          }
+      }
+
+  # Settings for a TLS enabled server.
+  #
+      server {
+          listen       445 ssl http2;
+          listen       [::]:445 ssl http2;
+          server_name  _;
+          root         /usr/share/nginx/html;
+
+          ssl_certificate "/var/lib/jenkins/secrets/server.crt";
+          ssl_certificate_key "/var/lib/jenkins/secrets/server.key";
+          ssl_session_cache shared:SSL:1m;
+          ssl_session_timeout  10m;
+          ssl_ciphers PROFILE=SYSTEM;
+          ssl_prefer_server_ciphers on;
+
+          # Load configuration files for the default server block.
+          include /etc/nginx/default.d/*.conf;
+
+          error_page 404 /404.html;
+              location = /40x.html {
+          }
+
+          error_page 500 502 503 504 /50x.html;
+              location = /50x.html {
+          }
+
+          location / {
+              proxy_pass http://127.0.0.1:8013;
+          }
+      }
+  }
+
+```
+  
+---
+  
+# 이하는 설명
+  
+
+---
+  
+
+
+## 실제로 사용 가능한 nginx 프록시 서버 만들기 (docker-compose)
 실제로 사용 가능한 nginx 프록시 서버를 만들기 위한 여정입니다. 필자는 보안에 대한 전문가도 아니고 nginx 전문가도 아닙니다만 그 과정을 최대한 종합적으로 정리해보고자 합니다. 본 글에서는 docker 를 활용하므로, docker 에 대한 기본적인 개념 및 docker-compose 를 간단하게 이용할 수 있는 정도의 지식만 있으면 됩니다. 또한 nginx 를 활용하므로 nginx 가 어떤 웹서버인지 간단하게나마 알면 좋습니다.
 
 간단 개념 정리
