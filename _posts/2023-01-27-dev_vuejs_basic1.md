@@ -585,6 +585,8 @@ export const login = {
 - nuxt.config.js
 
 ```json
+  import * as fs from 'fs'
+
   server: {
     port: 3013,
     host: '0.0.0.0',
