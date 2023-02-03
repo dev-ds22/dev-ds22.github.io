@@ -578,7 +578,86 @@ export const login = {
 - axios가 발생할 때 accessToken이 없을 경우 다시 토큰을 재발급한 후 요청을 해야 할 때 status가 401이고 재요청한 axios가 아니고 refreshToken이 있을 경우에는, 다시 axios를 요청
   - 재요청 구분을 위해 retry = true를 사용, 토큰을 재발급한 후 다시 요청.
 - 로그인 저장소의 actions안에 있는 refreshToken을 promise로 비동기를 처리하지 않으면 요청 중복현상이 발생하므로 주의
+  
+---
+  
+### 참고 1. vue https로 서비스
+- nuxt.config.js
 
+```json
+  server: {
+    port: 3013,
+    host: '0.0.0.0',
+    https: {
+      key: fs.readFileSync('/var/lib/jenkins/secrets/server.key'),
+      cert: fs.readFileSync('/var/lib/jenkins/secrets/server.crt')
+    }
+  },
+```
+
+- package.json
+
+```json
+  "scripts": {
+    "local": "nuxt --VUE_APP_ENV=local",
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "localbuild": "nuxt build --VUE_APP_ENV=local",
+    "localstart": "nuxt start --VUE_APP_ENV=local",
+    "devbuild": "nuxt build --VUE_APP_ENV=dev",
+    "devstart": "export NODE_TLS_REJECT_UNAUTHORIZED=0 && nuxt start --VUE_APP_ENV=dev --env.NODE_TLS_REJECT_UNAUTHORIZED=0",
+    "stgbuild": "nuxt build --VUE_APP_ENV=stg",
+    "stgstart": "nuxt start --VUE_APP_ENV=stg",
+    "prdbuild": "nuxt build --VUE_APP_ENV=prd",
+    "prdstart": "nuxt start --VUE_APP_ENV=prd",
+    "generate": "nuxt generate",
+    "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore .",
+    "lint": "npm run lint:js"
+  },
+```
+
+- .env
+
+```bash
+# ##################################################
+# 서비스 내부 정보
+# ##################################################
+# 서버 환경 정보 (local: 로컬테스트환경, ltd, dev,  prd)
+VUE_APP_VERSION = version
+VUE_APP_ENV = 'local'
+
+# ##################################################
+# 파일 업로드 용량 제한 (MB 단위)
+# ##################################################
+# 동영상
+VUE_APP_MAXIMUM_FILE_SIZE_VIDEO = 50
+# 이미지
+VUE_APP_MAXIMUM_FILE_SIZE_IMAGE = 10
+# 에디터
+VUE_APP_MAXIMUM_FILE_SIZE_HTML = 30
+# 기타파일
+VUE_APP_MAXIMUM_FILE_SIZE = 50
+
+# ##################################################
+# API 서버경로
+# ##################################################
+#local
+#개발자용
+LOCAL_BASEURL = http://dev.xxx.com:8013
+#dev
+DEV_BASEURL = https://adm.xxxdev.com:8013
+
+# ##################################################
+# WEB 서버경로
+# ##################################################
+#local
+# 개발자용
+LOCAL_WEBBASE_URL = http://dev.xxx.com:3013
+#dev
+DEV_WEBBASE_URL = https://adm.xxxdev.com:3013
+
+```
 
 <details>
   <summary>Exp.</summary>  
