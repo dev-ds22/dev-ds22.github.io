@@ -352,18 +352,36 @@ public class KafkaConsumerConfig {
 
 ## 2-1. pom.xml 에 의존성 등록
 
-```xml
+``` xml
   <!-- KAFKA -->
-  <dependency>
-    <groupId>org.springframework.kafka</groupId>
-    <artifactId>spring-kafka</artifactId>
-    <version>2.2.7.RELEASE</version>
-  </dependency>
-  <dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-  </dependency>
-​```
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.1.6.RELEASE</version>
+  </parent>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
+    <java.version>1.8</java.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+      <version>2.2.5.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.kafka</groupId>
+      <artifactId>spring-kafka</artifactId>
+      <version>2.2.7.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+  </dependencies>​
+```
+
 
 ## 2-2. application.properties 설정 추가
 
@@ -381,7 +399,7 @@ public class KafkaConsumerConfig {
 
 - Topic 설정
 ​
-```java
+``` java
   import org.apache.kafka.clients.admin.AdminClientConfig;
   import org.apache.kafka.clients.admin.NewTopic;
   import org.apache.kafka.common.internals.Topic;
@@ -436,13 +454,12 @@ public class KafkaConsumerConfig {
       return new NewTopic(greetingTopicName, 1, (short) 1);
     }
   }
-​```
+```
 
 - KafkaAdmin 타입의 생성자를 통해, Kafka 설정정보도 주입 가능.
 - Kafka-Spring 에서는 위의 코드를 통해서, 코드를 이용해서 프로그래밍 적으로 메시지 큐의 토픽 생성가능.
 - 스프링 부트(Kafka-Spring)에서는, 위와 같이 토픽을 생성해주는 함수를 만들고 Bean으로 등록해주면 자동으로 토픽을 생성해서 주입.
 
-​
 ​## 2-4. KafkaTopicConfig
 
 - 실제로 메시지를 발행하는 Producer에 관한 설정.
