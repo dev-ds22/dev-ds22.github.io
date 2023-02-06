@@ -352,7 +352,8 @@ public class KafkaConsumerConfig {
 
 ## 2-1. pom.xml 에 의존성 등록
 
-​```xml
+```xml
+
   <!-- KAFKA -->
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -380,6 +381,7 @@ public class KafkaConsumerConfig {
       <artifactId>jackson-databind</artifactId>
     </dependency>
   </dependencies>
+
 ​```
 
 ## 2-2. application.properties 설정 추가
