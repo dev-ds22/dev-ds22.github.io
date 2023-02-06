@@ -629,7 +629,27 @@ sudo chown -R jenkins /usr/local/bin/
 sudo chown -R jenkins /usr/local/share/
 ```
 
+#### .gitmodules 파일에 서브모듈 정보 확인
 
+- ssh(git@~~~~) 이용 안하고 https (https://~~~~) 이용시 jenkins에서 접속안될수 있음
+
+```
+[submodule "diso-common"]
+	path = diso-common
+	url = git@gitlab.diso.com:pilot/diso-common.git
+[submodule "diso-bo"]
+	path = diso-bo
+	url = git@gitlab.diso.com:pilot/diso-bo.git
+[submodule "diso-fo"]
+	path = diso-fo
+	url = git@gitlab.diso.com:pilot/diso-fo.git
+[submodule "diso-mo"]
+	path = diso-mo
+	url = git@gitlab.diso.com:pilot/diso-mo.git
+[submodule "diso-batch"]
+	path = diso-batch
+	url = git@gitlab.diso.com:pilot/diso-batch.git
+```
 
 
 <details>
