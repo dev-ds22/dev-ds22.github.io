@@ -899,7 +899,7 @@ public class KafkaExampleApplication {
 ​
 #### 실행시 로그확인.
 
-```log
+```
   Sent message=[Hello, World!] with offset=[1]
   Received Messasge in group 'bar': Hello, World!
   Received Messasge in group 'foo': Hello, World!
@@ -909,6 +909,7 @@ public class KafkaExampleApplication {
   Recieved Message in filtered listener: Hello Baeldung!
   Recieved Message in filtered listener: Hello World!
 ```
+
 
 ---
 
