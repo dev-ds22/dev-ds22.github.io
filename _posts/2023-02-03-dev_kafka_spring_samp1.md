@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "[tech] Spring Boot Kafka Template 사용 방법
+title: "[tech] Spring Boot Kafka Template 사용 방법"
 excerpt: "kafka"
 
 categories:
