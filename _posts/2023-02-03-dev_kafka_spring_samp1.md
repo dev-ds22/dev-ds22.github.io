@@ -348,45 +348,45 @@ public class KafkaConsumerConfig {
 ---
   
 
-# 2. Sample 2.
+# 2. Sample 2
 
-## 2-1. pom.xml
+## 2-1. pom.xml 에 의존성 등록
 
 ​```xml
-<!-- KAFKA -->
-<parent>
-  <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-starter-parent</artifactId>
-  <version>2.1.6.RELEASE</version>
-</parent>
-<properties>
-  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
-  <java.version>1.8</java.version>
-</properties>
-<dependencies>
-  <dependency>
+  <!-- KAFKA -->
+  <parent>
     <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter</artifactId>
-    <version>2.2.5.RELEASE</version>
-  </dependency>
-  <dependency>
-    <groupId>org.springframework.kafka</groupId>
-    <artifactId>spring-kafka</artifactId>
-    <version>2.2.7.RELEASE</version>
-  </dependency>
-  <dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-  </dependency>
-</dependencies>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.1.6.RELEASE</version>
+  </parent>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
+    <java.version>1.8</java.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+      <version>2.2.5.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.kafka</groupId>
+      <artifactId>spring-kafka</artifactId>
+      <version>2.2.7.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+  </dependencies>
 ​```
 
-## 2-2. application.properties
+## 2-2. application.properties 설정 추가
 
 - kafka의 설정 파일을 application.properties 파일에 추가.
 
-```
+```bash
   kafka.bootstrapAddress=localhost:9092
   message.topic.name=mytopic
   greeting.topic.name=greeting
@@ -394,9 +394,9 @@ public class KafkaConsumerConfig {
   partitioned.topic.name=partitioned
 ```
 
-## 2-3. KafkaTopicConfig
+## 2-3. KafkaTopicConfig 생성
 
-- Topic 설정.
+- Topic 설정
 ​
 ```java
   import org.apache.kafka.clients.admin.AdminClientConfig;
