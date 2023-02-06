@@ -842,6 +842,12 @@ spring:
 
   $ bin/kafka-console-consumer.sh --bootstrap-server pilot.daiso.com:9098 --from-beginning --topic dev-replicated-topic
   
+  - kafka # 토픽생성
+  $ bin/kafka-topics.sh --create --bootstrap-server localhost:9096 --replication-factor 1 --partitions 1 --topic sample-topic-a
+
+  $ bin/kafka-topics.sh --create --bootstrap-server localhost:9096 --replication-factor 1 --partitions 1 --topic sample-topic-b
+
+  $ bin/kafka-topics.sh --create --bootstrap-server localhost:9096 --replication-factor 1 --partitions 1 --topic sample-topic-c    
 ```
 
   </pre>

@@ -105,79 +105,47 @@ last_modified_at: 2023-02-03
 - kafkaProducerConfig 클래스를 만들고 kafka 접속 주소, Serializer, Deserializer 설정.
 
 ```java
-import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
-import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
-
-@Configuration
 @EnableKafka
-public class KafkaConsumerConfig {
-    @Value("${spring.kafka.bootstrap-servers}")
-    private String bootstrapServer;
-    @Value("${spring.kafka.consumer.value-deserializer}")
-    private String keyDeSerializer;
-    @Value("${spring.kafka.consumer.value-deserializer}")
-    private String valueDeSerializer;
-    @Value("${spring.kafka.consumer.auto-offset-reset}")
-    private String offsetReset;
-    @Value("${spring.kafka.consumer.max-poll-records}")
-    private String maxPollRecords;
-    @Value("${spring.kafka.consumer.enable-auto-commit}")
-    private String enableAutoCommit;
+@Configuration
+public class KafkaProducerConfig {
+  @Value("${spring.kafka.bootstrap-servers}")
+  private String bootstrapServer;
 
-    @Bean
-    public ConsumerFactory<String, String> topicAConsumerFactory() {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, keyDeSerializer);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, valueDeSerializer);
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetReset);
-        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, maxPollRecords);
-        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, enableAutoCommit);
-        return new DefaultKafkaConsumerFactory<>(props);
-    }
+  @Value("${spring.kafka.producer.key-serializer}")
+  private String keyDeSerializer;
 
-    @Bean(name = "topicAKafkaListenerContainerFactory")
-    public ConcurrentKafkaListenerContainerFactory<String, String>
-    topicAKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, String> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(topicAConsumerFactory());
-        return factory;
-    }
+  @Value("${spring.kafka.producer.value-serializer}")
+  private String valueDeSerializer;
 
-    @Bean
-    public ConsumerFactory<String, String> topicBConsumerFactory() {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, keyDeSerializer);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, valueDeSerializer);
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetReset);
-        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, maxPollRecords);
-        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, enableAutoCommit);
-        return new DefaultKafkaConsumerFactory<>(props);
-    }
+  @Bean
+  public ProducerFactory<String, String> producerFactory() {
+    Map<String, Object> configProps = new HashMap<>();
+    configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
+    configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, keyDeSerializer);
+    configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, valueDeSerializer);
+    return new DefaultKafkaProducerFactory<>(configProps);
+  }
 
-    @Bean(name = "topicBKafkaListenerContainerFactory")
-    public ConcurrentKafkaListenerContainerFactory<String, String>
-    topicBKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, String> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(topicBConsumerFactory());
-        return factory;
-    }
+  @Bean
+  public KafkaTemplate<String, String> kafkaTemplate() {
+    return new KafkaTemplate<>(producerFactory());
+  }
 }
 ```
 
-### 1-3-2. KafkaConsumer
+### 1-3-2. KafkaProducer
 
 - KafkaProducer 를 생성하고 Kafka 로 Topic 을 Produce(=Send)
   - kafkaTemplate.send 를 호출 간단하게 구현.
@@ -185,30 +153,33 @@ public class KafkaConsumerConfig {
   - 해당방법 이용 Header 에 Custom Key 설정가능
 
 ```java
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Component;
-
 @Slf4j
 @Component
-public class KafkaConsumer {
+public class KafkaProducer {
+  @Autowired
+  private KafkaTemplate<String, String> kafkaTemplate;
 
-    @KafkaListener(topics = "${spring.kafka.template.medium-sendid-topic}", containerFactory = "topicAKafkaListenerContainerFactory", groupId = "${spring.kafka.consumer.medium-sendid-group-id}")
-    public void listentopicATopic(@Payload String message, @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition, @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String messageKey) throws Exception {
-        log.info("Topic: [medium-sendid-topic] messageKey Message: [" + messageKey + "]");
-        log.info("Topic: [medium-sendid-topic] Received Message: [" + message + "] from partition: [" + partition + "]");
-    }
+  public void sendMessage(String topicName, String messageKey, String message) {
+    Message<String> messageBuilder = MessageBuilder
+            .withPayload(message)
+            .setHeader(KafkaHeaders.TOPIC, topicName)
+            .setHeader(KafkaHeaders.MESSAGE_KEY, messageKey)
+            .build();
+    ListenableFuture<SendResult<String, String>> future =
+            kafkaTemplate.send(messageBuilder);
 
-    @KafkaListener(topics = "${spring.kafka.template.company-sendid-topic}", containerFactory = "topicBKafkaListenerContainerFactory", groupId = "${spring.kafka.consumer.company-sendid-group-id}")
-    public void listentopicBTopic(
-            @Payload String message,
-            @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition, @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String messageKey) throws Exception {
-        log.info("Topic: [company-sendid-topic] messageKey Message: [" + messageKey + "]");
-        log.info("Topic: [company-sendid-topic] Received Message: [" + message + "] from partition: [" + partition + "]");
-    }
+    future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+      @Override
+      public void onSuccess(SendResult<String, String> result) {
+        log.info("Sent message=[" + message + "] with offset=[" + result.getRecordMetadata().offset() + "]");
+      }
+
+      @Override
+      public void onFailure(Throwable ex) {
+        log.info("Unable to send message=[" + message + "] due to : " + ex.getMessage());
+      }
+    });
+  }
 }
 ```
 
