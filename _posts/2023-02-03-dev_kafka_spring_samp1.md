@@ -906,6 +906,59 @@ public class SampleKafkaMessageController {
 
 ---
 
+## Producer 참고사항
+
+##### acks
+- 전송된 ProducerRecord를 수신하는 파티션 리플리카(복제 서버로 동작하는 브로커)의 수를 제어
+- 프로듀서가 서버에 메시지를 보낸 후 요청을 완료하기 전 승인의 수
+- 메시지 유실 가능성에 큰 영향을 주며, 다음 세 가지로 설정 가능 
+  - acks = 0 : 프로듀서는 브로커의 응답을 기다리지 않는다
+  - acks = 1 : 리더는 데이터를 기록, 팔로워는 신경쓰지 않음
+  - acks = all : 무손실, 동기화된 모든 리플리카가 메시지를 받으면 프로듀서가 브로커의 성공 응답을 받음
+
+##### buffer.memory
+- 브로커에게 전송될 메시지의 버퍼로 사용할 메모리 양(byte)
+
+##### compression.type
+- 기본적인 메시지는 압축되지 않은 상태로 전송되지만, 이 값을 설정하면 압축되어 전송 - snappy, gzip, lz4
+
+##### retries
+- 최대 재전송 회수. (default=2147483647) retry.backoff.ms(100ms)로 재전송간에 시간을 조정할 수 있음.
+
+##### batch.size
+- 같은 파티션에 쓰는 다수의 레코드를 배치 단위로 관리하는데, 이 배치에 사용될 메모리양을 말함.(byte)
+- 너무 작게 설정할 경우, 프로듀서가 자주 메시지를 전송해야 하므로 성능 저하 가능성이 있음.
+
+##### linger.ms
+- 현재의 배치를 전송하기 전까지 기다리는 시간(default=0)
+- batch.size 가 가득 차서 전송이 되거나, linger.ms 시간이 다 되어 전송이 되거나.
+
+##### client.id
+- 어떤 클라이언트에서 전송된 메시지인지 식별하기 위해 브로커가 사용
+
+##### max.in.flight.requests.per.connection
+- blocking 되기 전까지 응답이 오지 않은 메시지들을 몇 개까지 허용할 것인지. 이값을 1로 설정하면 메시지의 전송 순서대로 브로커가 쓰게 된다. (default = 5)
+
+##### request.timeout.ms
+- 데이터 전송시(request.timeout.ms), 메타데이터 요청할 때(metadata.fetch.timeout.ms) 프로듀서가 서버의 응답을 기다리는 제한 시간
+- timeout.ms는 동기화된 리플리카들이 메시지를 인지하는동안 브로커가 대기하는 시간, acks 매개변수의 설정에 따라 달라진다
+- https://kafka.apache.org/documentation/#upgrade_1100_notable
+- 만약 서버의 응답 없이 제한 시간이 경과되면 프로듀서는 재전송을 하거나 예외, 콜백을 전달하여 에러 응답. 
+
+##### max.block.ms
+- send() 메서드 호출시, 프로듀서의 전송 버퍼가 가득 차거나 메타데이터를 요청했지만 사용할 수 없을 때 이 시간동안 일시 중단됨 
+- 그 다음에 max.block.ms의 시간이 되면 시간 경과 예외가 발생
+
+##### max.request.size
+- 전송될 수 있는 가장 큰 메시지의 크기, 프로듀서가 하나의 요청으로 전송할 수 있는 메시지의 최대 개수 모두를 이 매개변수로 제한함
+- 브로커에 message.max.bytes 메시지의 최대 크기 제한값과 max.request.size의 값이 일치되도록 설정하는 것이 좋음
+- 브로커가 거부하는 크기의 메시지를 프로듀서가 전송하지 않을 것이기 때문
+
+##### receive.buffer.bytes와 send.buffer.bytes
+- TCP 소켓이 사용하는 (송수신) 버퍼 크기
+- -1로 사용하면 운영체제 기본값 사용
+- 프로듀서, 컨슈머가 서로 다른 데이터센터의 브로커들과 통신할 때 이 값을 증가시키는 것이 좋음
+
 <details>
   <summary>Exp.</summary>  
   <pre>
