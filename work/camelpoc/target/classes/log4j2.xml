@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<Configuration> 
+	<Properties>
+		<Property name="logName">camel-server</Property>
+		<!-- <Property name="layoutPattern">[%d] %-5level [%thread] %C{100} %M - %msg%n</Property> -->
+		<Property name="layoutPattern">[%d{HH:mm:ss}] %-3level %logger{24} - %msg%n</Property>
+	</Properties>
+	
+    <!-- 콘솔, 파일에 찍을 때 형식 및 설정 셋팅-->
+	<Appenders> 
+		<Console name="console" target="SYSTEM_OUT">
+	  		<!-- <PatternLayout pattern="[%d{HH:mm:ss.SSS}] %-5level [%thread] %C{100} %M - %msg%n" /> -->
+	  		<PatternLayout pattern="[%d{HH:mm:ss}] %-3level %logger{24} - %msg%n" />
+	 	</Console> 
+		<RollingFile name="file" fileName="/project/poc/camel/log/${logName}.log" filePattern="/project/poc/camel/log/${logName}_%d{yyyy-MM-dd}.log">
+			<PatternLayout pattern="${layoutPattern}" />
+ 			<Policies>
+  				<SizeBasedTriggeringPolicy size="10MB" /> <!-- 10MB 용량이 초과시 DefaultRolloverStrategy 정책만큼 넘버링 -->      
+				<TimeBasedTriggeringPolicy interval="1" /><!-- 일별 로그 파일 생성-->
+			</Policies>
+			<DefaultRolloverStrategy max="30" fileIndex="min" /><!-- 롤링 파일 500개 까지 생성 -->
+ 		</RollingFile>
+	</Appenders>
+	
+	<Loggers>
+		 <!-- =================================================================== -->
+		<!-- TESTPROJECT specific Logger setting								 -->
+		<!-- =================================================================== -->	
+	    <logger name="com.test.project" level="debug" additivity="false">
+	    	<AppenderRef ref="console" /> <!-- 콘솔에 로그 찍겠단 뜻 -->
+	      	<AppenderRef ref="file" />	  <!-- 파일에 로그 찍겠단 뜻 -->
+	    </logger>
+		<!-- =================================================================== -->
+		<!-- SPRING																 -->
+		<!-- =================================================================== -->	
+<!-- 
+        <logger name="org.springframework.core" level="error" additivity="false" >
+	      	<AppenderRef ref="console" />
+	      	<AppenderRef ref="file" />
+	     </logger>
+	     
+	     <logger name="org.springframework.beans" level="error" additivity="false" >
+	     	<AppenderRef ref="console" />
+	     	<AppenderRef ref="file" />
+	     </logger>
+	     
+	     <logger name="org.springframework.context" level="error" additivity="false" >
+	     	<AppenderRef ref="console" />
+	      	<AppenderRef ref="file" />
+	     </logger>
+	     
+	     <logger name="org.springframework.web" level="error" additivity="false" >
+	      	<AppenderRef ref="console" />
+	      	<AppenderRef ref="file" />
+	     </logger> 
+-->
+		
+		<!-- =================================================================== -->
+		<!-- JDBC																 -->
+		<!-- =================================================================== -->
+<!-- 
+		 <logger name="org.springframework.jdbc" level="error" additivity="false" >
+	      	<AppenderRef ref="console" />
+	      	<AppenderRef ref="file" />
+	     </logger>
+	     
+        <logger name="jdbc.sqltiming" level="error" additivity="false" >
+	      	<AppenderRef ref="console" />
+	      	<AppenderRef ref="file" />
+	     </logger>
+	     
+	     <logger name="jdbc.sqlonly" level="error" additivity="false" >
+	      	<AppenderRef ref="console" />
+	      	<AppenderRef ref="file" />
+	     </logger>
+	     
+	     <logger name="jdbc.connection" level="error" additivity="false" >
+	      	<AppenderRef ref="console" />
+	      	<AppenderRef ref="file" />
+	     </logger>
+	     
+     	 <logger name="jdbc.resultset" level="error" additivity="false" >
+      		<AppenderRef ref="console" />
+      		<AppenderRef ref="file" />
+    	 </logger>
+    	 
+    	 <logger name="jdbc.audit" level="error" additivity="false" >
+      		<AppenderRef ref="console" />
+      		<AppenderRef ref="file" />
+    	 </logger>
+    	 
+    	 <logger name="jdbc.resultsettable" level="error" additivity="false" >
+      		<AppenderRef ref="console" />
+      		<AppenderRef ref="file" />
+    	 </logger> 
+-->
+
+		<logger name="org.eclipse.jetty" level="info" additivity="false" >
+      		<AppenderRef ref="console" />
+      		<AppenderRef ref="file" />
+    	 </logger>
+
+		<logger name="org.apache.camel" level="info" additivity="false" >
+      		<AppenderRef ref="console" />
+      		<AppenderRef ref="file" />
+    	 </logger>
+		
+		<!-- =================================================================== -->
+		<!-- Root(Default) Setting												 -->
+		<!-- =================================================================== -->
+		<!-- off, fatal, error, warn, info, debug, trace, all -->
+		<Root level="debug" additivity="false">
+			<AppenderRef ref="file"/>
+			<AppenderRef ref="console" />
+	 	</Root>
+ 	</Loggers>
+</Configuration>
