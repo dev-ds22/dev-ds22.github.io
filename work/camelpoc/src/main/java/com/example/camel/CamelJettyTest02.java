@@ -36,7 +36,7 @@ public class CamelJettyTest02 extends RouteBuilder {
       from("jetty:http://127.0.0.1:8086/testjetty02")
       // .setBody(simple("${date:now:yyyy-MM-dd'T'HH:mm:ssZ}"))
       .process(new HttpProcessor())
-      // .log("Received a request")  
+      .log("Received a request")  
       .to("log:CamelJettyTest02?showExchangeId=true");
     }
 

@@ -1,0 +1,16 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+}
+
+dependencies {
+    compile 'com.deliveredtechnologies:rulebook-core:0.12-SNAPSHOT'
+    compile 'com.google.inject:guice:4.1.0'
+}
+
+mainClassName = 'com.example.rulebook.megabank.Application'
