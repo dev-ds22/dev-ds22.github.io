@@ -26,7 +26,7 @@ public class RouteDirectA extends RouteBuilder {
 	@Override
 	public void configure() throws Exception {
 
-		from("jetty:http://127.0.0.1:8090/directMain")
+		from("jetty:http://127.0.0.1:8096/directMain")
 			.setExchangePattern(ExchangePattern.InOnly)
 			.recipientList()
 			.jsonpath("$.data.routeName")
@@ -44,7 +44,7 @@ public class RouteDirectA extends RouteBuilder {
 
 					if (exchange.getPattern() == ExchangePattern.InOut) {
 						Message outMessage = exchange.getMessage();
-						outMessage.setBody(str + " - Response by DirectRoute-A Processor.");
+						outMessage.setBody(str + " [Integration Hub Lib.] - From Process#Direct-A Response by DirectRoute-A Processor.");
 					}
 				}
 			});

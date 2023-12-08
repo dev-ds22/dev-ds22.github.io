@@ -24,7 +24,7 @@ public class Process04 implements Processor {
         // 存入到exchange的out区域
         if (exchange.getPattern() == ExchangePattern.InOut) {
             Message outMessage = exchange.getMessage();
-            outMessage.setBody(inputContext + " - Response by Process-04.");
+            outMessage.setBody(inputContext + " [Integration Hub Lib.] - From Process#4 : Response by Process-04.");
         }
     }
 }

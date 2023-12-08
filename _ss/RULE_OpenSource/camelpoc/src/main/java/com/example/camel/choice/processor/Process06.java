@@ -12,7 +12,7 @@ public class Process06 implements Processor {
     public void process(Exchange exchange) throws Exception {
 
         log.info("===== Process06 =====");
-        log.info("Process06 executed... : {}", exchange);
+        log.info("[Integration Hub Lib.] - From Process#6 : Process06 executed... : {}", exchange);
         log.info("===== Process06 =====");
 
     }

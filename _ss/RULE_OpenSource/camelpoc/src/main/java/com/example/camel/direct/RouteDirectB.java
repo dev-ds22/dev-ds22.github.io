@@ -10,7 +10,7 @@ public class RouteDirectB extends RouteBuilder {
 	@Override
 	public void configure() throws Exception {
 		from("direct:directRouteB")
-		.log("DirectRoute-B process Start...")  
+		.log("[Integration Hub Lib.] - Process#DirectRoute-B process Start...")  
 		// .setBody(simple("${date:now:yyyy-MM-dd'T'HH:mm:ssZ}"))
 		.to("log:RouteDirectB?showExchangeId=true&level=INFO&showBody=true");
 

@@ -11,7 +11,7 @@ public class Process05 implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {
         log.info("===== Process05 =====");
-        log.info("Process05 executed... : {}", exchange);
+        log.info("[Integration Hub Lib.] - From Process#5 : Process05 executed... : {}", exchange);
         log.info("===== Process05 =====");
     }
 }

@@ -10,7 +10,7 @@ public class RouteDirectC extends RouteBuilder {
 	@Override
 	public void configure() throws Exception {
 		from("direct:directRouteC")
-		.log("DirectRoute-C process Start...")  
+		.log("[Integration Hub Lib.] - Process#DirectRoute-C process Start...")  
 		.to("log:RouteDirectC?showExchangeId=true&level=INFO&showBody=true");
 	}
 

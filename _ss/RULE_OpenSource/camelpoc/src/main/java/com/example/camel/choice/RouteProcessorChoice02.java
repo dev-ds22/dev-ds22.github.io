@@ -17,7 +17,7 @@ import java.io.InputStream;
 public class RouteProcessorChoice02 extends RouteBuilder {
 	
 	/**
-	 * http://127.0.0.1:8088/choiceRoute 를 호출 시 body 의 $.data.routeType 값에 따른 분기 확인
+	 * http://127.0.0.1:8082/choiceRoute 를 호출 시 body 의 $.data.routeType 값에 따른 분기 확인
 	 * 
 	 * $.data.routeType = 'test1' 일 경우 --> Response Test Processor-#1 Contents
 	 * $.data.routeType = 'test2' 일 경우 --> Response Test Processor-#2 Contents
@@ -29,7 +29,7 @@ public class RouteProcessorChoice02 extends RouteBuilder {
 		jsonPathExpression.setResultType(String.class);
 		// log.info("jsonPathExpression : {}", jsonPathExpression.toString());
 
-		from("jetty:http://127.0.0.1:8088/choiceRoute")
+		from("jetty:http://127.0.0.1:8082/choiceRoute")
 		.process(new Processor() {
 			@Override
 			public void process(Exchange exchange) throws Exception {
@@ -41,7 +41,7 @@ public class RouteProcessorChoice02 extends RouteBuilder {
 
 				if (exchange.getPattern() == ExchangePattern.InOut) {
 					Message outMessage = exchange.getMessage();
-					outMessage.setBody(inputContext + " - Response by Process-PRE");
+					outMessage.setBody(inputContext + " [Integration Hub Lib.] Response by Process-PRE");
 				}
 			}
 
@@ -57,7 +57,7 @@ public class RouteProcessorChoice02 extends RouteBuilder {
 
 				if (exchange.getPattern() == ExchangePattern.InOut) {
 					Message outMessage = exchange.getMessage();
-					outMessage.setBody(body + " - Response by Process-#1.");
+					outMessage.setBody(body + " [Integration Hub Lib.] Test REST Response by Process-#1.");
 				}
 
 			}
@@ -72,7 +72,7 @@ public class RouteProcessorChoice02 extends RouteBuilder {
 
 				if (exchange.getPattern() == ExchangePattern.InOut) {
 					Message outMessage = exchange.getMessage();
-					outMessage.setBody(body + " - Response by Process-#2.");
+					outMessage.setBody(body + " [Integration Hub Lib.] Test REST Response by Process-#2.");
 				}
 
 			}
@@ -87,7 +87,7 @@ public class RouteProcessorChoice02 extends RouteBuilder {
 
 				if (exchange.getPattern() == ExchangePattern.InOut) {
 					Message outMessage = exchange.getMessage();
-					outMessage.setBody(body + " - Response by Process-#3.");
+					outMessage.setBody(body + " [Integration Hub Lib.] Test REST Response by Process-#3.");
 				}
 
 			}

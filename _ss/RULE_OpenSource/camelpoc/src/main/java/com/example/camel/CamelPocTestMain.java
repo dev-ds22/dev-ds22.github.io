@@ -27,14 +27,14 @@ public class CamelPocTestMain {
 	     /**
 	      * 멀티URL 처리 - 호출 URL에 따른 처리분기 태스트
 	      * 
-	      * http://127.0.0.1:8083/testRouteA -> Response Process-A Contents.
-	      * http://127.0.0.1:8083/testRouteB -> Response Process-B Contents.
+	      * http://127.0.0.1:8081/testRouteA -> Response Process-A Contents.
+	      * http://127.0.0.1:8081/testRouteB -> Response Process-B Contents.
 	      * 
 	      */        
         camelContext.addRoutes(new RouteProcessorChoice01());
 
        /**
-	      * http://127.0.0.1:8088/choiceRoute 를 호출 시 body 의 $.data.routeType 값에 따른 분기 확인
+	      * http://127.0.0.1:8082/choiceRoute 를 호출 시 body 의 $.data.routeType 값에 따른 분기 확인
 	      * 
 	      * $.data.routeType = 'test1' 일 경우 --> Response Test Processor-#1 Contents
 	      * $.data.routeType = 'test2' 일 경우 --> Response Test Processor-#2 Contents
@@ -45,7 +45,7 @@ public class CamelPocTestMain {
        /**
         * 호출되는 request body 내용에 따른 분기 테스트 #2
         * 
-        * http://127.0.0.1:8088/choiceRoute 
+        * http://127.0.0.1:8083/choiceRoute 
         * 
         * 호출 시 body 안의 data.routeType 의 값이 test1 일 경우 Process02 처리, 
         * data.routeType 의 값이 test2 일 경우 Process03 처리, 그외는 Process04 가 처리
@@ -55,12 +55,12 @@ public class CamelPocTestMain {
        /**
         * 호출되는 request body 내용에 따른 분기 테스트
         * 
-        * http://127.0.0.1:8088/choiceRoute 
+        * http://127.0.0.1:8084/choiceRoute 
         * 
         * 호출 시 body 안에 test1 이 포함되었을 경우 Process02 처리, 
         * body 안에 test2 가 포함되었을 경우 Process03 처리, 그외는 Process04 가 처리
         */        
-        // camelContext.addRoutes(new RouteJettyChoice02());
+        camelContext.addRoutes(new RouteJettyChoice02());
 
        /**
         * 파일명에 따른 분기 테스트
@@ -83,7 +83,7 @@ public class CamelPocTestMain {
        /**
         * http 호출 시 request 내용(json)에 설정된 Direct Route 실행 테스트
         * 
-        * http://127.0.0.1:8090/directMain
+        * http://127.0.0.1:8096/directMain
         * 
         * request json 의 $.data.routeName 에 설정된 Route 호출
         * direct:directRouteB,direct:directRouteC 와 같이 ',' 구분자로 순서대로 해당 Route 처리 

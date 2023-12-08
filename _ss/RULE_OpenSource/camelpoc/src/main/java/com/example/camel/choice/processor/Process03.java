@@ -23,7 +23,7 @@ public class Process03 implements Processor {
 
         if (exchange.getPattern() == ExchangePattern.InOut) {
             Message outMessage = exchange.getMessage();
-            outMessage.setBody(inputContext + " - Response by Process-03.");
+            outMessage.setBody(inputContext + " [Integration Hub Lib.] - From Process#3 : Response by Process-03.");
         }
     }
 }

@@ -19,7 +19,7 @@ public class RouteJettyChoice02 extends RouteBuilder {
      */
     @Override
     public void configure() throws Exception {
-        from("jetty:http://127.0.0.1:8088/choiceRoute")
+        from("jetty:http://127.0.0.1:8084/choiceRoute")
         .process(new Process01())
         .choice()
         .when(body().contains("test1")).process(new Process02()).to("log:RouteJettyChoice02?showExchangeId=true&level=INFO")
